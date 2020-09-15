@@ -1,5 +1,10 @@
 
-interface IMuehleFrame
+
+import {IStellungAllgemein} from '../IStellungAllgemein';
+import {ISpiel} from '../ISpiel';
+
+
+export interface IMuehleFrame
 {
   /**
    * Zeichnet die uebergebene Stellung

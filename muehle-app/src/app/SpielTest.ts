@@ -11,7 +11,7 @@ import {ISpiel} from './ISpiel';
 
 export class SpielTest implements ISpiel
 {
-    iMuehleFrame: IMuehleFrame;
+    // iMuehleFrame: IMuehleFrame;
     aktuelleStellung: Stellung  = null;
     spielIstGestartet = false;
     private neuerZugMensch: Zug    = null;
@@ -37,27 +37,27 @@ export class SpielTest implements ISpiel
     {
         // this.iMuehleFrame = new MuehleFrame(this);
         this.erstelleStartStellung();
-        this.iMuehleFrame.zeichneStellung(this.getAktuelleStellung());
+        //// this.iMuehleFrame.zeichneStellung(this.getAktuelleStellung());
     }
 
 
     stoppeSpiel(): void
     {
         this.spielIstGestartet = false;
-        this.iMuehleFrame.log('Spiel gestoppt');
+        //// this.iMuehleFrame.log('Spiel gestoppt');
     }
 
 
     loescheSpielfeld(): void
     {
         this.spielIstGestartet = false;
-        this.iMuehleFrame.log('Spiel geloescht.');
+        //// this.iMuehleFrame.log('Spiel geloescht.');
     }
 
 
     zugZurueck(): void
     {
-        this.iMuehleFrame.log('Zug Zurueck nicht implementiert.');
+        //// this.iMuehleFrame.log('Zug Zurueck nicht implementiert.');
     }
 
 
