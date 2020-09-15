@@ -1,52 +1,43 @@
-package muehle;
+import {IZug} from './IZug';
 
-public class Zug implements IZug
+export class Zug implements IZug
 {
-    private int posVon;
-    private int posBis;
-    private int posSteinWeg;
-    
-    
+    private posVon: number;
+    private posBis: number;
+    private posSteinWeg: number;
 
-    public int getPosVon()
+
+    getPosVon(): number
     {
         return this.posVon;
     }
-    
 
-
-    public void setPosVon(int posVon)
+    setPosVon(posVon: number): void
     {
         this.posVon = posVon;
     }
-    
 
 
-    public int getPosBis()
+    getPosBis(): number
     {
         return this.posBis;
     }
-    
 
 
-    public void setPosBis(int posBis)
+    setPosBis(posBis: number): void
     {
         this.posBis = posBis;
     }
-    
 
 
-    public int getPosSteinWeg()
+    getPosSteinWeg(): number
     {
         return this.posSteinWeg;
     }
-    
 
 
-    public void setPosSteinWeg(int posSteinWeg)
+    setPosSteinWeg(posSteinWeg: number): void
     {
         this.posSteinWeg = posSteinWeg;
     }
-    
-
 }

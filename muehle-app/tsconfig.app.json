@@ -3,11 +3,31 @@
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "outDir": "./out-tsc/app",
-    "types": []
+    "types": ["node"],
+    "typeRoots": [ "../node_modules/@types" ],
+    "experimentalDecorators": true
   },
   "files": [
-    "src/main.ts",
-    "src/polyfills.ts"
+    "src/app/Gewichte.ts",
+    "src/app/Hasheintrag.ts",
+    "src/app/IEngine.ts",
+    "src/app/ISpiel.ts",
+    "src/app/IStellung.ts",
+    "src/app/IStellungAllgemein.ts",
+    "src/app/IZug.ts",
+    "src/app/KeckEngine.ts",
+    "src/app/muehleBerechnung.ts",
+    "src/app/muehle.component.ts",
+    "src/app/SpielfeldModel.ts",
+    "src/app/SpielTest.ts",
+    "src/app/SpielThread.ts",
+    "src/app/Stellung.ts",
+    "src/app/Util.ts",
+    "src/app/ZufallsEngine.ts",
+    "src/app/Zug.ts",
+    "src/app/ZugGenerator.ts",
+    "src/app/gui/IMuehleFrame.ts",
+    "src/app/muehle.component.ts"
   ],
   "include": [
     "src/**/*.d.ts"

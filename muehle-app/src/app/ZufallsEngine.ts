@@ -1,24 +1,35 @@
-package muehle;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Vector;
+import {ZugGenerator} from './ZugGenerator';
+import {Stellung} from './Stellung';
+import {IZug} from './IZug';
+import {IEngine} from './IEngine';
 
-public class ZufallsEngine implements IEngine{
-	
-	public IZug berechneNeuenZug(Vector<IStellungAllgemein> p_stellungsFolge, int p_zugtiefeMax){
-		Stellung l_stellung = (Stellung)p_stellungsFolge.lastElement();
-		ZugGenerator    zugGen                      = new ZugGenerator();
-		
-		List<Stellung> alleStellungen =  zugGen.ermittleAlleZuege(l_stellung, 0, false);
-		Collections.sort(alleStellungen);
-		return alleStellungen.get(0).getLetzterZug();
-	}
 
-		
-	public String getEngineName(){
-		return "ZufallsEngine";
-	}
-		
+export class ZufallsEngine implements IEngine{
+
+  berechneNeuenZug(stellungsFolge: Stellung[], zugtiefeMax: number): IZug{
+    const stellung: Stellung = stellungsFolge[stellungsFolge.length - 1];
+    const zugGen: ZugGenerator = new ZugGenerator();
+
+    let alleStellungen: Stellung[] = zugGen.ermittleAlleZuege(stellung, 0, false);
+    alleStellungen = alleStellungen.sort((n1, n2) => {
+      if (n1.getBewertung() > n2.getBewertung()) {
+         return 1;
+      }
+      else if (n1.getBewertung() < n2.getBewertung()) {
+         return -1;
+      }
+      else {
+        return 0;
+      }
+    });
+
+    return alleStellungen[0].getLetzterZug();
+  }
+
+
+  getEngineName(): string{
+    return 'ZufallsEngine';
+  }
 
 }

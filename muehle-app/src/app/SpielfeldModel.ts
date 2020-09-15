@@ -1,38 +1,35 @@
-package muehle;
+import {Stellung} from './Stellung';
 
-import java.util.Vector;
-
-public class SpielfeldModel
+export class SpielfeldModel
 {
-    
-    Stellung         aktuelleStellung;
-    Vector<Stellung> stellungsFolge;
-    
-    
 
-    public Stellung getAktuelleStellung()
+    aktuelleStellung: Stellung;
+    stellungsFolge: Array<Stellung>;
+
+
+    getAktuelleStellung(): Stellung
     {
         return this.aktuelleStellung;
     }
-    
 
 
-    public void setAktuelleStellung(Stellung p_Stellung)
+
+    setAktuelleStellung(stellung: Stellung): void
     {
-        this.aktuelleStellung = p_Stellung;
+        this.aktuelleStellung = stellung;
     }
-    
 
 
-    public Vector<Stellung> getStellungsFolge()
+
+    getStellungsFolge(): Stellung[]
     {
         return this.stellungsFolge;
     }
-    
 
 
-    public void setStellungsFolge(Vector<Stellung> p_StellungsFolge)
+
+    setStellungsFolge(StellungsFolge: Stellung[]): void
     {
-        this.stellungsFolge = p_StellungsFolge;
+        this.stellungsFolge = StellungsFolge;
     }
 }

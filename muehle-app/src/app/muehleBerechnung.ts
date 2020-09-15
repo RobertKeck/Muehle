@@ -1,69 +1,50 @@
+import {ZugGenerator} from './ZugGenerator';
+import {Stellung} from './Stellung';
+import {Util} from './Util';
+import {KeckEngine} from './KeckEngine';
 
-class MuehleBerechnung
+
+export class MuehleBerechnung
 {
-    
-
-    anzStellungenBlaetter: BigInteger;
-    anzStellungenInHashGefunden: BigInteger;
-    
-
-    zugtiefeMax : BigInteger;
-    
-    ergebnisStellung: Stellung;
-    zugGen: ZugGenerator;
-    //	Vector<Long> stellungsFolgeSchwarzWeiss = new Vector<Long>(); 
-    //	Vector<Stellung> stellungsFolge = new Vector<Stellung>();
+    anzStellungenBlaetter = 0;
+    anzStellungenInHashGefunden = 0;
+    zugtiefeMax: number;
+    ergebnisStellung: Stellung  = new Stellung();
+    zugGen: ZugGenerator = new ZugGenerator();
+    // Vector<Long> stellungsFolgeSchwarzWeiss = new Vector<Long>();
+    // Vector<Stellung> stellungsFolge = new Vector<Stellung>();
     keckEngine: KeckEngine;
-    wertneu: BigInteger;
-    
-    
+    wertneu: number;
 
-    constructor (p_KeckEngine: KeckEngine)
+    constructor(keckEngine: KeckEngine)
     {
-        this.keckEngine = p_KeckEngine;
-        let anzStellungenBlaetter       = 0;
-        let anzStellungenInHashGefunden = 0;
-        let ergebnisStellung = new Stellung();
-        zugGen = new ZugGenerator();
+        this.keckEngine = keckEngine;
+        this.zugGen = new ZugGenerator();
     }
-    
-
 
     /**
      * Ermittelt ausgehend von der uebergeben Stellung den Besten Zug, fuehrt diesen aus, und
      * schreibt das Ergebnis in ergebnisStellung
-     * 
-     * @param p_stellung
-     * @param zugtiefe
-     * @param alpha
-     * @param beta
-     * 
-     * 
      */
-    ermittleBestenZug(p_stellung: Stellung, zugtiefe:BigInteger, alpha:BigInteger, beta:BigInteger):BigInteger
+    ermittleBestenZug(stellung: Stellung, zugtiefe: number, alpha: number, beta: number): number
     {
-        
-        
         let eigene = 0;
-        
-        
         //          if (spiel.threadGestoppt){
         //        	  return 0;
         //          }
-        if (p_stellung.getAmZug() == Util.SCHWARZ)
+        if (stellung.getAmZug() === Util.SCHWARZ)
         {
             eigene = 1;
         }
-        
-       
+
         /*--------------------------------------------------------------------------*/
         /* Spieler hat weniger als 3 Steine --> verloren --> Abbruch */
         /*--------------------------------------------------------------------------*/
-        if (p_stellung.getAnzahlSteine()[eigene] < 3)
+        if (stellung.getAnzahlSteine()[eigene] < 3)
         {
-            let wertneu = -Util.MAXIMUM + zugtiefe;
+           const wertneu = -Util.MAXIMUM + zugtiefe;
 
-            return wertneu;
+           return wertneu;
         }
         /*--------------------------------------------------------------------------*/
         /* Wurde maximale Zugtiefe erreicht ? */
@@ -71,11 +52,10 @@ class MuehleBerechnung
         if (zugtiefe >= this.zugtiefeMax)
         {
             this.anzStellungenBlaetter++;
-            let wertneu = -p_stellung.bewerteStellung(keckEngine.getGewichte().getGewichtAnzSteine().intValue(),
-            		keckEngine.getGewichte().getGewichtAnzMuehlen().intValue(),
-            		keckEngine.getGewichte().getGewichtAnzOffeneMuehlen().intValue(),
-            		keckEngine.getGewichte().getGewichtAnzFreieNachbarn().intValue());
-
+            const wertneu = -stellung.bewerteStellung(this.keckEngine.getGewichte().getGewichtAnzSteine(),
+                                                    this.keckEngine.getGewichte().getGewichtAnzMuehlen(),
+                                                    this.keckEngine.getGewichte().getGewichtAnzOffeneMuehlen(),
+                                                    this.keckEngine.getGewichte().getGewichtAnzFreieNachbarn());
             return wertneu;
         }
         /*--------------------------------------------------------------------------*/
@@ -85,27 +65,29 @@ class MuehleBerechnung
         /*--------------------------------------------------------------------------*/
         // Wenn das erste Vorkommen der Stellung nicht am Vektorende ist,
         // dann liegt Stellungswiederholung vor
-        if (this.keckEngine.stellungsFolgeSchwarzWeiss.indexOf(p_stellung.getWeissSchwarz()) != this.keckEngine.stellungsFolgeSchwarzWeiss.size() - 1)
+        if (this.keckEngine.stellungsFolgeSchwarzWeiss.indexOf(stellung.getWeissSchwarz()) !==
+                                this.keckEngine.stellungsFolgeSchwarzWeiss.length - 1)
         {
             return 0; // Remi
         }
-        
+
 
         /*--------------------------------------------------------------------------*/
         /* Ermittle (phasenabhaengig) alle moeglichen Zuege */
         /*--------------------------------------------------------------------------*/
-        List<Stellung> alleStellungen = this.zugGen.ermittleAlleZuege(p_stellung,
-                this.keckEngine.stellungsFolgeSchwarzWeiss.size(), true);
+        let alleStellungen = this.zugGen.ermittleAlleZuege(stellung,
+                this.keckEngine.stellungsFolgeSchwarzWeiss.length, true);
         /*--------------------------------------------------------------------------*/
         /* Wurde Spieler eingeschlossen ? (Kann nur in Schiebphase passieren) */
         /*--------------------------------------------------------------------------*/
-        if (alleStellungen.size() == 0)
+        if (alleStellungen.length === 0)
         {
-            let wertneu = -Util.MAXIMUM + zugtiefe;
+            const wertneu = -Util.MAXIMUM + zugtiefe;
+
 
             return wertneu;
         }
-        
+
         /*--------------------------------------------------------------------------*/
         /* Extrem wichtig fuer ein moeglichst haeufiges Abschneiden beim Alpha/ */
         /* beta -Algorithmus ist eine moeglichst gute Vorsortierung. */
@@ -113,63 +95,70 @@ class MuehleBerechnung
         /*--------------------------------------------------------------------------*/
         if (zugtiefe < this.zugtiefeMax - 1)
         {
-            ListIterator<Stellung> it = alleStellungen.listIterator();
-            while (it.hasNext())   
+            for (const stellungAktuell of alleStellungen)
             {
-            	Stellung l_stellungAktuell = it.next();
-            	l_stellungAktuell.bewerteStellung(keckEngine.getGewichte().getGewichtAnzSteine().intValue(),
-                		keckEngine.getGewichte().getGewichtAnzMuehlen().intValue(),
-                		keckEngine.getGewichte().getGewichtAnzOffeneMuehlen().intValue(),
-                		keckEngine.getGewichte().getGewichtAnzFreieNachbarn().intValue());
-            	
+              stellungAktuell.bewerteStellung(this.keckEngine.getGewichte().getGewichtAnzSteine(),
+              this.keckEngine.getGewichte().getGewichtAnzMuehlen(),
+              this.keckEngine.getGewichte().getGewichtAnzOffeneMuehlen(),
+              this.keckEngine.getGewichte().getGewichtAnzFreieNachbarn());
+
             }
-        	// Sortiere die Stellungen
-            Collections.sort(alleStellungen);
+            // Sortiere die Stellungen
+
+            alleStellungen = alleStellungen.sort((n1, n2) => {
+              if (n1.getBewertung() > n2.getBewertung()) {
+                 return 1;
+              }
+              else if (n1.getBewertung() < n2.getBewertung()) {
+                 return -1;
+              }
+              else {
+                return 0;
+              }
+            });
         }
         /*---------------------------------------------------------------------------------------------------*/
         /* Schleife ueber alle moeglichen Zuege, der Zug mit der hoechsten Bewertung wird zuerst durchlaufen */
         /*---------------------------------------------------------------------------------------------------*/
-        ListIterator<Stellung> it = alleStellungen.listIterator();
-        while (it.hasNext())
+        for (const stellungNeu of alleStellungen)
         {
-            Stellung l_stellungNeu = it.next();
-            
-            //---------------------------------
-            // rekursiver Aufruf  
-            //---------------------------------
+
+            // ---------------------------------
+            // rekursiver Aufruf
+            // ---------------------------------
             // Neuen Zug in Stellungsfolge speichern
-            this.keckEngine.stellungsFolgeSchwarzWeiss.add(l_stellungNeu.getWeissSchwarz());
-            
-            wertneu = -this.ermittleBestenZug(l_stellungNeu, (short) (zugtiefe + 1), -beta, -alpha);
-            
+            this.keckEngine.stellungsFolgeSchwarzWeiss.push(stellungNeu.getWeissSchwarz());
+
+            const wertneu = -this.ermittleBestenZug(stellungNeu, (zugtiefe + 1), -beta, -alpha);
+
             // neuen Zug aus Stellungsfolge wieder loeschen
-            this.keckEngine.stellungsFolgeSchwarzWeiss.remove(this.keckEngine.stellungsFolgeSchwarzWeiss.size() - 1);
-            
+            this.keckEngine.stellungsFolgeSchwarzWeiss.splice(this.keckEngine.stellungsFolgeSchwarzWeiss.length - 1, 1);
+
             /*------------------------------------------------------------------------*/
             /* Wenn alpha >= beta --> sofort abschneiden */
             /*------------------------------------------------------------------------*/
             if (wertneu >= beta)
             {
-                if (zugtiefe == 0)
+                if (zugtiefe === 0)
                 {
-                    this.ergebnisStellung = l_stellungNeu.kopiereStellung();
+                    this.ergebnisStellung = stellungNeu.kopiereStellung();
                     this.ergebnisStellung.setBewertung(beta);
                 }
-                
-                //				System.out.println(">>>Zugtiefe: " + zugtiefe);
-                //		      System.out.println(">>>>>>>>>beta: " + beta);
+
+                // console.log('>>>Zugtiefe: ' + zugtiefe);
+                // console.log('>>>>>>>>>beta: ' + beta);
                 return beta;
             }
-            
+
             /*------------------------------------------------------------------------*/
             /* Wenn neuer Wert > alpha --> veraendere alpha */
             /*------------------------------------------------------------------------*/
             if (wertneu > alpha)
             {
                 alpha = wertneu;
-                if (zugtiefe == 0)
+                if (zugtiefe === 0)
                 {
-                    this.ergebnisStellung = l_stellungNeu.kopiereStellung();
+                    this.ergebnisStellung = stellungNeu.kopiereStellung();
                     this.ergebnisStellung.setBewertung(wertneu);
                 }
 
@@ -177,17 +166,16 @@ class MuehleBerechnung
         } /* end of Schleife ueber moegliche Zuege */
         return alpha;
     } /* end of ErmittleBestenZug */
-    
 
 
-    function getZugtiefeMax():BigInteger
+    getZugtiefeMax(): number
     {
         return this.zugtiefeMax;
     }
 
-    function setZugtiefeMax(p_zugtiefeMax:BigInteger)
+    setZugtiefeMax(zugtiefeMax: number): void
     {
-        this.zugtiefeMax = p_zugtiefeMax;
+        this.zugtiefeMax = zugtiefeMax;
     }
-    
+
 }

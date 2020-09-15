@@ -1,141 +1,142 @@
-package muehle;
+import { MuehleComponent } from './muehle.component';
+import {ZugGenerator} from './ZugGenerator';
+import {Stellung} from './Stellung';
+import {Util} from './Util';
+import {Zug} from './Zug';
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.TimeZone;
-import java.util.Vector;
-
-public class SpielThread extends Thread
+export class SpielThread // extends Thread // TODO worker child process erstellen
 {
-    
-    Spiel spiel;
-    
-    
 
-    public SpielThread(Spiel p_spiel)
+    muehleComponent: MuehleComponent;
+    muehleComponentZuEnde = true;
+
+
+
+    constructor(muehleComponent: MuehleComponent)
     {
-        this.spiel = p_spiel;
+        this.muehleComponent = muehleComponent;
     }
-    
 
 
-    // Spielschleife
-    public void run()
+
+    // muehleComponentschleife
+    public run(): void
     {
-        
-        boolean spielZuEnde = false;
-        ZugGenerator zugGen = new ZugGenerator();
-        int zugNr = 0;
-        int l_zugtiefeMax = this.spiel.getMuehleFrame().getCBZugtiefe();
 
-        
-        while (!spielZuEnde)
-        { // && spiel.threadGestoppt == false){
-            
-            this.spiel.aktuelleStellungKopie = (Stellung)this.spiel.getAktuelleStellung().kopiereStellung();
-            this.spiel.stellungsFolgeSchwarzWeissKopie = new Vector<Long>(
-                    this.spiel.stellungsFolgeSchwarzWeiss);
-            this.spiel.stellungsFolgeKopie = new Vector<IStellungAllgemein>(this.spiel.stellungsFolge);
+        this.muehleComponentZuEnde = false;
+        const zugGen = new ZugGenerator();
+        let zugNr = 0;
+        let zugtiefeMax = this.muehleComponent.getCBZugtiefe();
 
-        	// ermittle die aktuell gueltigen Zuege
-            this.spiel.alleAktuellGueltigenStellungen = zugGen.ermittleAlleZuege(
-                    (Stellung) this.spiel.getAktuelleStellung(),
-                    this.spiel.stellungsFolge.size(), false);
-            this.spiel.alleAktuellGueltigenStellungenKopie = new ArrayList<Stellung>(this.spiel.alleAktuellGueltigenStellungen);
 
-            
-            l_zugtiefeMax = this.spiel.getMuehleFrame().getCBZugtiefe();
-            int eigen = 0;
-            if (this.spiel.getAktuelleStellung().getAmZug() == -1)
+        while (!this.muehleComponentZuEnde)
+        { // && muehleComponent.threadGestoppt == false){
+
+            this.muehleComponent.aktuelleStellungKopie = this.muehleComponent.getAktuelleStellung().kopiereStellung() as Stellung;
+            this.muehleComponent.stellungsFolgeSchwarzWeissKopie = this.muehleComponent.stellungsFolgeSchwarzWeiss.slice();
+
+            this.muehleComponent.stellungsFolgeKopie = this.muehleComponent.stellungsFolge.slice();
+
+            // ermittle die aktuell gueltigen Zuege
+            this.muehleComponent.alleAktuellGueltigenStellungen = zugGen.ermittleAlleZuege(
+                    this.muehleComponent.getAktuelleStellung() as Stellung,
+                    this.muehleComponent.stellungsFolge.length, false);
+            this.muehleComponent.alleAktuellGueltigenStellungenKopie = this.muehleComponent.alleAktuellGueltigenStellungen.slice();
+
+
+            zugtiefeMax = this.muehleComponent.getCBZugtiefe();
+            let eigen = 0;
+            if (this.muehleComponent.getAktuelleStellung().getAmZug() === -1)
             {
                 eigen = 1;
             }
-            
 
-            if (this.spiel.getMuehleFrame().getCBWeiss().equals("Mensch"))
+
+            if (this.muehleComponent.getCBWeiss() === ('Mensch'))
             {
-                this.spiel.computerMensch[0] = Util.MENSCH;
+                this.muehleComponent.computerMensch[0] = Util.MENSCH;
             }
             else
             {
-                this.spiel.computerMensch[0] = Util.COMPUTER;
+                this.muehleComponent.computerMensch[0] = Util.COMPUTER;
             }
-            if (this.spiel.getMuehleFrame().getCBSchwarz().equals("Mensch"))
+            if (this.muehleComponent.getCBSchwarz() === ('Mensch'))
             {
-                this.spiel.computerMensch[1] = Util.MENSCH;
+                this.muehleComponent.computerMensch[1] = Util.MENSCH;
             }
             else
             {
-                this.spiel.computerMensch[1] = Util.COMPUTER;
+                this.muehleComponent.computerMensch[1] = Util.COMPUTER;
             }
-            
 
-            if (this.spiel.computerMensch[eigen] == Util.MENSCH)
+
+            if (this.muehleComponent.computerMensch[eigen] === Util.MENSCH)
             {
                 // Mensch ist am Zug
-                
-                if (this.spiel.getAktuelleStellung().getAmZug() == Util.WEISS)
+
+                if (this.muehleComponent.getAktuelleStellung().getAmZug() === Util.WEISS)
                 {
-                    this.spiel.log("Weiss ist am Zug");
+                    this.muehleComponent.log('Weiss ist am Zug');
                 }
                 else
                 {
-                    this.spiel.log("Schwarz ist am Zug");
+                    this.muehleComponent.log('Schwarz ist am Zug');
                 }
-                //spiel.setAlleAktuellGueltigenStellungen(zugGen.ermittleAlleZuege((Stellung)spiel.getAktuelleStellung(), spiel.stellungsFolge.size(), false));
-                this.spiel.setNeuerZugMensch(null);
-                while (this.spiel.getNeuerZugMensch() == null)
+                this.muehleComponent.setNeuerZugMensch(null);
+                while (this.muehleComponent.getNeuerZugMensch() == null)
                 {
-                    //do nothing  -- warte auf Benutzereingabe
+                    // do nothing  -- warte auf Benutzereingabe
                 }
-                this.spiel.setAktuelleStellung(this.spiel.ermittleStellungZumGueltigenZug(
-                        (Zug) this.spiel.getNeuerZugMensch()).kopiereStellung());
-                
+                this.muehleComponent.setAktuelleStellung(this.muehleComponent.ermittleStellungZumGueltigenZug(
+                        this.muehleComponent.getNeuerZugMensch() as Zug).kopiereStellung());
+
             }
             else
             {
-            	IZug l_computerZug = null;
+                let computerZug = null;
                 // Computer ueberlegt den naechsten Zug
-                if (this.spiel.getAktuelleStellung().getAmZug() == Util.WEISS)
+                if (this.muehleComponent.getAktuelleStellung().getAmZug() === Util.WEISS)
                 {
-                    this.spiel.log(this.spiel.computerEngineWeiss.getEngineName() + " ist mit Weiss am Zug. Bitte warten...");
+                    this.muehleComponent.log(this.muehleComponent.computerEngineWeiss.getEngineName() + ' ist mit Weiss am Zug. Bitte warten...');
                     // Computerzug wird von computerEngineWeiss durchgefuehrt
-                    l_computerZug = this.spiel.computerEngineWeiss.berechneNeuenZug((Vector<IStellungAllgemein>)this.spiel.stellungsFolge, l_zugtiefeMax);
+                    computerZug = this.muehleComponent.computerEngineWeiss.berechneNeuenZug(this.muehleComponent.stellungsFolge,
+                       zugtiefeMax);
                 }
                 else
                 {
-                    this.spiel.log(this.spiel.computerEngineSchwarz.getEngineName() + " ist mit Schwarz am Zug. Bitte warten...");
+                    this.muehleComponent.log(this.muehleComponent.computerEngineSchwarz.getEngineName() + ' ist mit Schwarz am Zug. Bitte warten...');
                     // Computerzug wird von computerEngineWeiss durchgefuehrt
-                    l_computerZug = this.spiel.computerEngineSchwarz.berechneNeuenZug((Vector<IStellungAllgemein>)this.spiel.stellungsFolge, l_zugtiefeMax);
+                    computerZug = this.muehleComponent.computerEngineSchwarz.berechneNeuenZug(this.muehleComponent.stellungsFolge,
+                       zugtiefeMax);
                 }
-                if (l_computerZug == null){
-                	String l_ausgabe = "Es wurde kein Zug von der Engine zurückgegeben !! Das Spiel wurde abgebrochen.";
-                	this.spiel.computerEngineWeiss = null;
-                	this.spiel.computerEngineSchwarz = null;
-                	
-                	this.spiel.log(l_ausgabe);
-                	break;
+                if (computerZug === null){
+                  const ausgabe = 'Es wurde kein Zug von der Engine zurï¿½ckgegeben !! Das muehleComponent wurde abgebrochen.';
+                  this.muehleComponent.computerEngineWeiss = null;
+                  this.muehleComponent.computerEngineSchwarz = null;
+
+                  this.muehleComponent.log(ausgabe);
+                  break;
                 }
 
-                Stellung l_stellung = this.spiel.ermittleStellungZumGueltigenZug((Zug) l_computerZug);
-                // Ungueltiger Zug --> Spielabbruch
-                if (l_stellung == null){
-                	String l_ausgabe = "Ungueltiger Zug (PosVon: " + l_computerZug.getPosVon() + "  , PosBis: " 
-        			+ l_computerZug.getPosBis() + "  , PosGeschlagen: " + l_computerZug.getPosSteinWeg() 
-					+ ")  !! Das Spiel wurde abgebrochen.";
-                	
-                	this.spiel.computerEngineWeiss = null;
-                	this.spiel.computerEngineSchwarz = null;
-                	
-                	this.spiel.log(l_ausgabe);
-                	break;
+                const stellung = this.muehleComponent.ermittleStellungZumGueltigenZug(computerZug);
+                // Ungueltiger Zug --> muehleComponentabbruch
+                if (stellung == null){
+                  const ausgabe = 'Ungueltiger Zug (PosVon: ' + computerZug.getPosVon() + '  , PosBis: '
+                  + computerZug.getPosBis() + '  , PosGeschlagen: ' + computerZug.getPosSteinWeg()
+                  + ')  !! Das muehleComponent wurde abgebrochen.';
+
+                  this.muehleComponent.computerEngineWeiss = null;
+                  this.muehleComponent.computerEngineSchwarz = null;
+
+                  this.muehleComponent.log(ausgabe);
+                  break;
                 }
                 else
                 {
-                	this.spiel.setAktuelleStellung(l_stellung.kopiereStellung());
+                   this.muehleComponent.setAktuelleStellung(stellung.kopiereStellung());
                 }
 
-                //System.out.println("anzSymmetrieStellungen: " + zugGen.anzSymmetrieStellungen);
+                // System.out.println('anzSymmetrieStellungen: ' + zugGen.anzSymmetrieStellungen);
 //            try
 //            {
 //                Thread.sleep(1);
@@ -145,47 +146,58 @@ public class SpielThread extends Thread
 //            {
 //                System.out.println(ie.toString());
 //            }
-               /// this.spiel.setAktuelleStellung(this.spiel.muehleBerechnung.ergebnisStellung.kopiereStellung());
+               /// this.muehleComponent.setAktuelleStellung(this.muehleComponent.muehleBerechnung.ergebnisStellung.kopiereStellung());
             }
-            
-            this.spiel.zeichneSpielfeld();
-            System.out.println(this.spiel.getAktuelleStellung().toString());
+
+            this.muehleComponent.zeichneSpielfeld();
+            console.log(this.muehleComponent.getAktuelleStellung().toString());
             zugNr++;
-            System.out.println("ZugNr: " + zugNr);
-            
-            this.spiel.stellungsFolgeSchwarzWeiss.add(this.spiel.getAktuelleStellung().getWeissSchwarz());
-            this.spiel.stellungsFolge.add((Stellung) this.spiel.getAktuelleStellung());
-            
-            if (this.spiel.getAktuelleStellung().getAnzahlSteine()[0] < 3)
+            console.log('ZugNr: ' + zugNr);
+
+            this.muehleComponent.stellungsFolgeSchwarzWeiss.push(this.muehleComponent.getAktuelleStellung().getWeissSchwarz());
+            this.muehleComponent.stellungsFolge.push(this.muehleComponent.getAktuelleStellung());
+
+            if (this.muehleComponent.getAktuelleStellung().getAnzahlSteine()[0] < 3)
             {
-                spielZuEnde = true;
-                this.spiel.log("Schwarz hat gewonnen!");
+                this.muehleComponentZuEnde = true;
+                this.muehleComponent.log('Schwarz hat gewonnen!');
             }
-            else if (this.spiel.getAktuelleStellung().getAnzahlSteine()[1] < 3)
+            else if (this.muehleComponent.getAktuelleStellung().getAnzahlSteine()[1] < 3)
             {
-                spielZuEnde = true;
-                this.spiel.log("Weiss hat gewonnen!");
+                this.muehleComponentZuEnde = true;
+                this.muehleComponent.log('Weiss hat gewonnen!');
             }
-            else if (this.spiel.getAktuelleStellung().getAnzahlFreierNachbarfelder()[0] == 0
-                    && this.spiel.getAktuelleStellung().getAnzahlSteineAussen()[0] == 0
-                    && this.spiel.getAktuelleStellung().getAnzahlSteine()[0] > 3)
+            else if (this.muehleComponent.getAktuelleStellung().getAnzahlFreierNachbarfelder()[0] === 0
+                    && this.muehleComponent.getAktuelleStellung().getAnzahlSteineAussen()[0] === 0
+                    && this.muehleComponent.getAktuelleStellung().getAnzahlSteine()[0] > 3)
             {
-                spielZuEnde = true; // Weiss wurde eingesperrt
-                this.spiel.log("Weiss wurde eingesperrt ==> Schwarz hat gewonnen!");
+                this.muehleComponentZuEnde = true; // Weiss wurde eingesperrt
+                this.muehleComponent.log('Weiss wurde eingesperrt ==> Schwarz hat gewonnen!');
             }
-            else if (this.spiel.getAktuelleStellung().getAnzahlFreierNachbarfelder()[1] == 0
-                    && this.spiel.getAktuelleStellung().getAnzahlSteineAussen()[1] == 0
-                    && this.spiel.getAktuelleStellung().getAnzahlSteine()[1] > 3)
+            else if (this.muehleComponent.getAktuelleStellung().getAnzahlFreierNachbarfelder()[1] === 0
+                    && this.muehleComponent.getAktuelleStellung().getAnzahlSteineAussen()[1] === 0
+                    && this.muehleComponent.getAktuelleStellung().getAnzahlSteine()[1] > 3)
             {
-                spielZuEnde = true; // Schwarz wurde eingesperrt
-                this.spiel.log("Schwarz wurde eingesperrt ==> Weiss hat gewonnen!");
+                this.muehleComponentZuEnde = true; // Schwarz wurde eingesperrt
+                this.muehleComponent.log('Schwarz wurde eingesperrt ==> Weiss hat gewonnen!');
             }
-            else if (this.spiel.stellungsFolgeSchwarzWeiss.indexOf(this.spiel.getAktuelleStellung().getWeissSchwarz()) != this.spiel.stellungsFolgeSchwarzWeiss.size() - 1)
+            else if (this.muehleComponent.stellungsFolgeSchwarzWeiss.indexOf(
+                     this.muehleComponent.getAktuelleStellung().getWeissSchwarz()) !==
+                         this.muehleComponent.stellungsFolgeSchwarzWeiss.length - 1)
             {
-                spielZuEnde = true; // Remi
-                this.spiel.log(">>> Remie wegen Stellungswiederholung <<<");
+                this.muehleComponentZuEnde = true; // Remi
+                this.muehleComponent.log('>>> Remie wegen Stellungswiederholung <<<');
             }
-            
+
         }
+    }
+    isAlive(): boolean{
+      return (this.muehleComponentZuEnde === true);
+    }
+    stop(): void{
+      this.muehleComponentZuEnde = true;
+    }
+    start(): void{
+      this.run();
     }
 }

@@ -1,129 +1,116 @@
-package muehle;
 
-import java.util.ArrayList;
-import java.util.List;
+import {Stellung} from './Stellung';
+import {Util} from './Util';
+import {Zug} from './Zug';
+
+import {IStellungAllgemein} from './IStellungAllgemein';
+import {IZug} from './IZug';
+import {ISpiel} from './ISpiel';
 
 
-import muehle.gui.IMuehleFrame;
-import muehle.gui.MuehleFrame;
 
-public class SpielTest implements ISpiel
+export class SpielTest implements ISpiel
 {
-    protected IMuehleFrame iMuehleFrame;
-    private Stellung       aktuelleStellung  = null;
-    protected boolean      spielIstGestartet = false;
-    private Zug            neuerZugMensch    = null;
-    protected int[]        computerMensch    = new int[2];
-    
-    
+    iMuehleFrame: IMuehleFrame;
+    aktuelleStellung: Stellung  = null;
+    spielIstGestartet = false;
+    private neuerZugMensch: Zug    = null;
+    computerMensch: number[]    = new Array<number>();
+
 
     /**
      * Main
-     * 
-     * @param args
      */
+    /*
     public static void main(String[] args)
     {
         SpielTest spieltest = new SpielTest();
     }
-    
+    */
 
 
     /**
      * Konstruktor
-     * 
+     *
      */
-    public SpielTest()
+    constructor()
     {
-        this.iMuehleFrame = new MuehleFrame(this);
+        // this.iMuehleFrame = new MuehleFrame(this);
         this.erstelleStartStellung();
         this.iMuehleFrame.zeichneStellung(this.getAktuelleStellung());
     }
-    
 
 
-    public void stoppeSpiel()
+    stoppeSpiel(): void
     {
         this.spielIstGestartet = false;
-        this.iMuehleFrame.log("Spiel gestoppt");
-        
+        this.iMuehleFrame.log('Spiel gestoppt');
     }
-    
 
 
-    public void loescheSpielfeld()
+    loescheSpielfeld(): void
     {
         this.spielIstGestartet = false;
-        this.iMuehleFrame.log("Spiel gel�scht.");
-        
-
+        this.iMuehleFrame.log('Spiel geloescht.');
     }
-    
 
 
-    public void zugZurueck()
+    zugZurueck(): void
     {
-        this.iMuehleFrame.log("Zug Zur�ck nicht implementiert.");
+        this.iMuehleFrame.log('Zug Zurueck nicht implementiert.');
     }
-    
 
 
-    public void start()
+
+    public start(): void
     {
         this.spielIstGestartet = true;
-        
     }
-    
 
 
-    public boolean spielIstGestartet()
-    {
-        return this.spielIstGestartet;
-    }
-    
 
 
-    public boolean istMenschAmZug()
+    istMenschAmZug(): boolean
     {
         return true;
     }
-    
 
 
-    public IStellungAllgemein getAktuelleStellung()
+
+    getAktuelleStellung(): IStellungAllgemein
     {
         return this.aktuelleStellung;
     }
-    
 
 
-    public void setAktuelleStellung(IStellungAllgemein p_aktuelleStellung)
+
+    setAktuelleStellung(aktuelleStellung: IStellungAllgemein): void
     {
-        this.aktuelleStellung = (Stellung) p_aktuelleStellung;
+        this.aktuelleStellung = aktuelleStellung as Stellung;
     }
-    
 
 
-    public IZug getNeuerZugMensch()
+
+    getNeuerZugMensch(): IZug
     {
         return this.neuerZugMensch;
     }
-    
 
 
-    public void setNeuerZugMensch(IZug p_neuerZug)
+
+    setNeuerZugMensch(neuerZug: IZug): void
     {
-        this.neuerZugMensch = (Zug) p_neuerZug;
+        this.neuerZugMensch = neuerZug as Zug;
     }
-    
 
 
-    protected void erstelleStartStellung()
+
+    erstelleStartStellung(): void
     {
         this.aktuelleStellung = new Stellung();
         this.aktuelleStellung.setAmZug(Util.WEISS);
-        int[] initialAnzahlSteine = {9,9};
-        
+        const initialAnzahlSteine = [9, 9];
+
         this.aktuelleStellung.setAnzahlSteine(initialAnzahlSteine);
         this.aktuelleStellung.setAnzahlSteineAussen(initialAnzahlSteine);
         this.aktuelleStellung.anzahlMuehlen[0] = 0;
@@ -132,35 +119,37 @@ public class SpielTest implements ISpiel
 //        this.aktuelleStellung.anzahlOffenerMuehlen[1] = 0;
         this.aktuelleStellung.anzahlFreierNachbarfelder[0] = 0;
         this.aktuelleStellung.anzahlFreierNachbarfelder[1] = 0;
-        for (int i = 0; i < 17; i++)
+        for (let i = 0; i < 17; i++)
         {
             this.aktuelleStellung.muehle[0][i] = 0;
             this.aktuelleStellung.muehle[1][i] = 0;
 //            this.aktuelleStellung.offeneMuehle[0][i] = 0;
 //            this.aktuelleStellung.offeneMuehle[1][i] = 0;
         }
-        int[] leeresSpielfeld = {0,0};
+        const leeresSpielfeld = [0, 0];
         this.aktuelleStellung.setSpielpositionen(leeresSpielfeld);
         this.aktuelleStellung.setBewertung(0);
-        this.aktuelleStellung.weissSchwarz = new Long(0);
-        
+        this.aktuelleStellung.weissSchwarz = 0;
+
         this.computerMensch[0] = Util.MENSCH; // Weiss
         this.computerMensch[1] = Util.MENSCH; // Schwarz
     }
-    
 
 
-    public List<IZug> getAlleAktuellGueltigenZuege()
+
+    getAlleAktuellGueltigenZuege(): IZug[]
     {
-        List<IZug> zugListe = new ArrayList<IZug>();
-        
+        const zugListe = new Array<IZug>();
         return zugListe;
     }
-    
 
 
-    public int[] getComputerMensch()
+
+    getComputerMensch(): number[]
     {
         return this.computerMensch;
+    }
+    istSpielGestartet(): boolean{
+      return this.spielIstGestartet;
     }
 }
