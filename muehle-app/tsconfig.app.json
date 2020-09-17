@@ -18,6 +18,7 @@
     "src/app/KeckEngine.ts",
     "src/app/muehleBerechnung.ts",
     "src/app/muehle.component.ts",
+    "src/app/muehle.module.ts",
     "src/app/SpielfeldModel.ts",
     "src/app/SpielTest.ts",
     "src/app/SpielThread.ts",
@@ -27,7 +28,9 @@
     "src/app/Zug.ts",
     "src/app/ZugGenerator.ts",
     "src/app/gui/IMuehleFrame.ts",
-    "src/app/muehle.component.ts"
+    "src/app/muehle.component.ts",
+    "src/main.ts",
+    "src/polyfills.ts"
   ],
   "include": [
     "src/**/*.d.ts"

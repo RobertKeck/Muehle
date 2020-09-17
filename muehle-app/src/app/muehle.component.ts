@@ -207,6 +207,7 @@ export class MuehleComponent implements ISpiel
     start(): void
     {
 
+        this.logTextField += 'Spiel wurde gestartet..';
         if (this.spielThread != null)
         {
             this.spielThread.stop();
