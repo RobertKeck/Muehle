@@ -33,7 +33,7 @@ export class MuehleComponent implements ISpiel
     aktuelleStellungKopie: Stellung;
     stellungsFolgeSchwarzWeissKopie: number[];
     stellungsFolgeKopie: Array<IStellungAllgemein>;
-    private aktuelleStellung: Stellung           = null;
+    private aktuelleStellung: Stellung  =  null;
     spielThread: SpielThread;
     alleAktuellGueltigenStellungen: Stellung[];
     alleAktuellGueltigenStellungenKopie: Stellung[];
@@ -64,13 +64,14 @@ export class MuehleComponent implements ISpiel
     /**
      * Konstruktor
      */
+    /*
     construtor(): void
     {
         /////// this.iMuehleFrame = new MuehleFrame(this);
         this.erstelleStartStellung();
         /////// this.iMuehleFrame.zeichneStellung(this.aktuelleStellung);
     }
-
+    */
 
     /**
      * Spiele-Thread wird gestoppt
@@ -202,11 +203,12 @@ export class MuehleComponent implements ISpiel
     {
         // TODO
         // this.iMuehleFrame.zeichneStellung(this.aktuelleStellung);
+        this.log(this.aktuelleStellung.toString());
     }
 
     start(): void
     {
-
+        this.erstelleStartStellung();
         this.logTextField += 'Spiel wurde gestartet..';
         if (this.spielThread != null)
         {

@@ -35,6 +35,7 @@ export class Gewichte {
    */
   public ladeGewichte(): void
   {
+    /*
     const propertiesReader = require('properties-reader');
     const properties = propertiesReader('gewichte.properties');
 
@@ -43,6 +44,12 @@ export class Gewichte {
     this.gewichtAnzMuehlen = properties.get('GEWICHT_ANZ_MUEHLEN');
     this.gewichtAnzOffeneMuehlen = properties.get('GEWICHT_ANZ_OFFENE_MUEHLEN');
     this.gewichtAnzFreieNachbarn = properties.get('GEWICHT_ANZ_FREIE_NACHBARN');
+   */
+  this.gewichtAnzSteine = 16;
+  this.gewichtAnzMuehlen = 4;
+  this.gewichtAnzOffeneMuehlen = 5;
+  this.gewichtAnzFreieNachbarn = 3;
+
 
 
   }
@@ -66,6 +73,7 @@ export class Gewichte {
    */
   public speichereGewichte(): void
   {
+    /*
     const propertiesReader = require('properties-reader');
     const properties = propertiesReader('gewichte.properties');
 
@@ -73,6 +81,7 @@ export class Gewichte {
     properties.set('GEWICHT_ANZ_MUEHLEN', this.gewichtAnzMuehlen);
     properties.set('GEWICHT_ANZ_OFFENE_MUEHLEN', this.gewichtAnzOffeneMuehlen);
     properties.set('GEWICHT_ANZ_FREIE_NACHBARN', this.gewichtAnzFreieNachbarn);
+    */
 
   }
 

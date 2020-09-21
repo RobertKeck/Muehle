@@ -8,8 +8,7 @@ export class ZugGenerator
 
     private anzSymmetrieStellungen = 0;
 
-    ZOBRIST_ZUFALLSWERTE: number[][];
-
+    ZOBRIST_ZUFALLSWERTE: number[][] = [[], []];
     private readonly PHASE_I = 1;
     private readonly PHASE_II  = 2;
     private readonly PHASE_III = 3;
@@ -443,6 +442,7 @@ export class ZugGenerator
 
     // tslint:disable-next-line: align
     private generiereZufallszahlen(): void {
+
         this.ZOBRIST_ZUFALLSWERTE[0][0] = 0;
         this.ZOBRIST_ZUFALLSWERTE[1][0] = 0;
         for (let i = 1; i < 25; i++)

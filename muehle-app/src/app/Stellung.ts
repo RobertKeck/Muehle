@@ -28,7 +28,7 @@ export class Stellung implements IStellung
      * spielpositionen in eine grosse Hashtabelle gespeichert werden
      *
      */
-    spielpositionen: number[];
+    spielpositionen: number[] = new Array();
     private anzahlSteineAussen: number[] = new Array();
     private anzahlSteine: number[] = new Array();
     private amZug: number;         // 1 = Weiss, -1 = Schwarz
@@ -43,13 +43,13 @@ export class Stellung implements IStellung
      * Moeglichkeiten fuer eine schwarze Muehle. Jede Muehle kann die
      * Werte von 0 bis 3 annehmen. Bei 3 ist sie vollstaendig, also geschlossen.
      */
-    muehle: number[][] = new Array([2][17]);
+    muehle: number[][] = [[], []]; // new Array([2][17]);
 
     /**
      * es gibt 64 verschiedene Moeglichkeiten (1..65) fuer eine offene Muehle fuer Weiss und ebenso viele fuer Schwarz.
      * Nur wenn offeneMuehle[i] = 3, dann ist dies eine offene Muehle.
      */
-    offeneMuehle: number[][] = new Array([2][65]);
+    offeneMuehle: number[][] = [[], []]; // new Array([2][65]);
 
 
     getAnzahlSteine(): number[] {
@@ -222,63 +222,63 @@ export class Stellung implements IStellung
      */
     toString(): string
     {
-        const ausgabeString = '';
+        let ausgabeString = '\n';
 
-        ausgabeString.concat(this.feld(1) + '----------------' + this.feld(2) + '----------------'
-                + this.feld(3) + '\n');
-        ausgabeString.concat(' |                 |                 |' + '\n');
-        ausgabeString.concat(' |                 |                 |' + '\n');
-        ausgabeString.concat(' |    ' + this.feld(4) + '----------' + this.feld(5) + '----------'
-                + this.feld(6) + '     |' + '\n');
-        ausgabeString.concat(' |     |           |           |     |' + '\n');
-        ausgabeString.concat(' |     |           |           |     |' + '\n');
-        ausgabeString.concat(' |     |    ' + this.feld(7) + '----' + this.feld(8) + '----'
-                + this.feld(9) + '     |     |' + '\n');
-        ausgabeString.concat(' |     |     |           |     |     |' + '\n');
-        ausgabeString.concat(' |     |     |           |     |     |' + '\n');
-        ausgabeString.concat(this.feld(10) + '----' + this.feld(11) + '----' + this.feld(12)
+        ausgabeString += this.feld(1) + '----------------' + this.feld(2) + '----------------'
+                + this.feld(3) + '\n';
+        ausgabeString += ' |                 |                 |' + '\n';
+        ausgabeString += ' |                 |                 |' + '\n';
+        ausgabeString += ' |    ' + this.feld(4) + '----------' + this.feld(5) + '----------'
+                + this.feld(6) + '     |' + '\n';
+        ausgabeString += ' |     |           |           |     |' + '\n';
+        ausgabeString += ' |     |           |           |     |' + '\n';
+        ausgabeString += ' |     |    ' + this.feld(7) + '----' + this.feld(8) + '----'
+                + this.feld(9) + '     |     |' + '\n';
+        ausgabeString += ' |     |     |           |     |     |' + '\n';
+        ausgabeString += ' |     |     |           |     |     |' + '\n';
+        ausgabeString += this.feld(10) + '----' + this.feld(11) + '----' + this.feld(12)
                 + '          ' + this.feld(13) + '----' + this.feld(14) + '----' + this.feld(15)
-                + '\n');
-        ausgabeString.concat(' |     |     |           |     |     |' + '\n');
-        ausgabeString.concat(' |     |     |           |     |     |' + '\n');
-        ausgabeString.concat(' |     |    ' + this.feld(16) + '----' + this.feld(17) + '----'
-                + this.feld(18) + '     |     |' + '\n');
-        ausgabeString.concat(' |     |           |           |     |' + '\n');
-        ausgabeString.concat(' |     |           |           |     |' + '\n');
-        ausgabeString.concat(' |    ' + this.feld(19) + '----------' + this.feld(20) + '----------'
-                + this.feld(21) + '     |' + '\n');
-        ausgabeString.concat(' |                 |                 |' + '\n');
-        ausgabeString.concat(' |                 |                 |' + '\n');
-        ausgabeString.concat(this.feld(22) + '----------------' + this.feld(23)
-                + '----------------' + this.feld(24) + '\n');
-        ausgabeString.concat('\n');
-        ausgabeString.concat('Bewertung: ' + this.bewertung + '\n');
-        ausgabeString.concat('anzahlSteineAussen Weiss: ' + this.anzahlSteineAussen[0] + '\n');
-        ausgabeString.concat('anzahlSteineAussen Schwarz: ' + this.anzahlSteineAussen[1] + '\n');
-        ausgabeString.concat('anzahlSteine Weiss: ' + this.anzahlSteine[0] + '\n');
-        ausgabeString.concat('anzahlSteine Schwarz: ' + this.anzahlSteine[1] + '\n');
-        ausgabeString.concat('anzahlMuehlen Weiss: ' + this.anzahlMuehlen[0] + '\n');
-        ausgabeString.concat('anzahlMuehlen Schwarz: ' + this.anzahlMuehlen[1] + '\n');
-        ausgabeString.concat('anzahlOffenerMuehlen Weiss: ' + this.getAnzahlOffenerMuehlen()[0] + '\n');
-        ausgabeString.concat('anzahlOffenerMuehlen Schwarz: ' + this.getAnzahlOffenerMuehlen()[1] + '\n');
-        ausgabeString.concat('anzahlFreierNachbarfelder Weiss: '
-                + this.anzahlFreierNachbarfelder[0] + '\n');
-        ausgabeString.concat('anzahlFreierNachbarfelder Schwarz: '
-                + this.anzahlFreierNachbarfelder[1] + '\n');
-        ausgabeString.concat('am Zug: ');
+                + '\n';
+        ausgabeString += ' |     |     |           |     |     |' + '\n';
+        ausgabeString += ' |     |     |           |     |     |' + '\n';
+        ausgabeString += ' |     |    ' + this.feld(16) + '----' + this.feld(17) + '----'
+                + this.feld(18) + '     |     |' + '\n';
+        ausgabeString += ' |     |           |           |     |' + '\n';
+        ausgabeString += ' |     |           |           |     |' + '\n';
+        ausgabeString += ' |    ' + this.feld(19) + '----------' + this.feld(20) + '----------'
+                + this.feld(21) + '     |' + '\n';
+        ausgabeString += ' |                 |                 |' + '\n';
+        ausgabeString += ' |                 |                 |' + '\n';
+        ausgabeString += this.feld(22) + '----------------' + this.feld(23)
+                + '----------------' + this.feld(24) + '\n';
+        ausgabeString += '\n';
+        ausgabeString += 'Bewertung: ' + this.bewertung + '\n';
+        ausgabeString += 'anzahlSteineAussen Weiss: ' + this.anzahlSteineAussen[0] + '\n';
+        ausgabeString += 'anzahlSteineAussen Schwarz: ' + this.anzahlSteineAussen[1] + '\n';
+        ausgabeString += 'anzahlSteine Weiss: ' + this.anzahlSteine[0] + '\n';
+        ausgabeString += 'anzahlSteine Schwarz: ' + this.anzahlSteine[1] + '\n';
+        ausgabeString += 'anzahlMuehlen Weiss: ' + this.anzahlMuehlen[0] + '\n';
+        ausgabeString += 'anzahlMuehlen Schwarz: ' + this.anzahlMuehlen[1] + '\n';
+        ausgabeString += 'anzahlOffenerMuehlen Weiss: ' + this.getAnzahlOffenerMuehlen()[0] + '\n';
+        ausgabeString += 'anzahlOffenerMuehlen Schwarz: ' + this.getAnzahlOffenerMuehlen()[1] + '\n';
+        ausgabeString += 'anzahlFreierNachbarfelder Weiss: '
+                + this.anzahlFreierNachbarfelder[0] + '\n';
+        ausgabeString += 'anzahlFreierNachbarfelder Schwarz: '
+                + this.anzahlFreierNachbarfelder[1] + '\n';
+        ausgabeString += 'am Zug: ';
         if (this.amZug === Util.WEISS)
         {
-            ausgabeString.concat('Weiss');
+            ausgabeString += 'Weiss';
         }
         else
         {
-            ausgabeString.concat('Schwarz');
+            ausgabeString += 'Schwarz';
         }
-        ausgabeString.concat('\n');
-        ausgabeString.concat('ZobristKey: ' + this.zobristHashWert + '\n');
-        ausgabeString.concat('posVon: ' + this.letzterZug.getPosVon() + '\n');
-        ausgabeString.concat('posBis: ' + this.letzterZug.getPosBis() + '\n');
-        ausgabeString.concat('posSteinWeg: ' + this.letzterZug.getPosSteinWeg() + '\n');
+        ausgabeString += '\n';
+        ausgabeString += 'ZobristKey: ' + this.zobristHashWert + '\n';
+        ausgabeString += 'posVon: ' + this.letzterZug.getPosVon() + '\n';
+        ausgabeString += 'posBis: ' + this.letzterZug.getPosBis() + '\n';
+        ausgabeString += 'posSteinWeg: ' + this.letzterZug.getPosSteinWeg() + '\n';
         return ausgabeString;
     }
 
