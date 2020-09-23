@@ -11,7 +11,7 @@ export class MuehleBerechnung
     zugtiefeMax: number;
     ergebnisStellung: Stellung  = new Stellung();
     zugGen: ZugGenerator = new ZugGenerator();
-    // Vector<Long> stellungsFolgeSchwarzWeiss = new Vector<Long>();
+    // Vector<Long> stellungsFolgeZobristKeys = new Vector<Long>();
     // Vector<Stellung> stellungsFolge = new Vector<Stellung>();
     keckEngine: KeckEngine;
     wertneu: number;
@@ -65,10 +65,13 @@ export class MuehleBerechnung
         /*--------------------------------------------------------------------------*/
         // Wenn das erste Vorkommen der Stellung nicht am Vektorende ist,
         // dann liegt Stellungswiederholung vor
-        if (this.keckEngine.stellungsFolgeSchwarzWeiss.indexOf(stellung.getWeissSchwarz()) !==
-                                this.keckEngine.stellungsFolgeSchwarzWeiss.length - 1)
+        //// if (this.keckEngine.stellungsFolgeZobristKeys.indexOf(stellung.getWeissSchwarz()) !==
+        if (this.keckEngine.stellungsFolgeZobristKeys.indexOf(stellung.getZobristHashWert()) !==
+                                this.keckEngine.stellungsFolgeZobristKeys.length - 1)
         {
-            return 0; // Remi
+            if (stellung.getAnzahlSteineAussen()[0] === 0 && stellung.getAnzahlSteineAussen()[1] === 0){
+               return 0; // Remi
+            }
         }
 
 
@@ -76,7 +79,7 @@ export class MuehleBerechnung
         /* Ermittle (phasenabhaengig) alle moeglichen Zuege */
         /*--------------------------------------------------------------------------*/
         let alleStellungen = this.zugGen.ermittleAlleZuege(stellung,
-                this.keckEngine.stellungsFolgeSchwarzWeiss.length, true);
+                this.keckEngine.stellungsFolgeZobristKeys.length, true);
         /*--------------------------------------------------------------------------*/
         /* Wurde Spieler eingeschlossen ? (Kann nur in Schiebphase passieren) */
         /*--------------------------------------------------------------------------*/
@@ -103,8 +106,9 @@ export class MuehleBerechnung
               this.keckEngine.getGewichte().getGewichtAnzFreieNachbarn());
 
             }
-            // Sortiere die Stellungen
-
+            // Sortiere die Stellungen anhand ihrer Bewertung absteigend
+            alleStellungen = alleStellungen.sort((n1, n2) => n2.getBewertung() - n1.getBewertung());
+            /*
             alleStellungen = alleStellungen.sort((n1, n2) => {
               if (n1.getBewertung() > n2.getBewertung()) {
                  return 1;
@@ -116,6 +120,7 @@ export class MuehleBerechnung
                 return 0;
               }
             });
+            */
         }
         /*---------------------------------------------------------------------------------------------------*/
         /* Schleife ueber alle moeglichen Zuege, der Zug mit der hoechsten Bewertung wird zuerst durchlaufen */
@@ -127,12 +132,13 @@ export class MuehleBerechnung
             // rekursiver Aufruf
             // ---------------------------------
             // Neuen Zug in Stellungsfolge speichern
-            this.keckEngine.stellungsFolgeSchwarzWeiss.push(stellungNeu.getWeissSchwarz());
+            ///////////////this.keckEngine.stellungsFolgeZobristKeys.push(stellungNeu.getWeissSchwarz());
+            this.keckEngine.stellungsFolgeZobristKeys.push(stellungNeu.getZobristHashWert());
 
             const wertneu = -this.ermittleBestenZug(stellungNeu, (zugtiefe + 1), -beta, -alpha);
 
             // neuen Zug aus Stellungsfolge wieder loeschen
-            this.keckEngine.stellungsFolgeSchwarzWeiss.splice(this.keckEngine.stellungsFolgeSchwarzWeiss.length - 1, 1);
+            this.keckEngine.stellungsFolgeZobristKeys.splice(this.keckEngine.stellungsFolgeZobristKeys.length - 1, 1);
 
             /*------------------------------------------------------------------------*/
             /* Wenn alpha >= beta --> sofort abschneiden */

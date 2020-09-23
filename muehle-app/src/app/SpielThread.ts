@@ -33,7 +33,7 @@ export class SpielThread // extends Thread // TODO worker child process erstelle
         { // && muehleComponent.threadGestoppt == false){
 
             this.muehleComponent.aktuelleStellungKopie = this.muehleComponent.getAktuelleStellung().kopiereStellung() as Stellung;
-            this.muehleComponent.stellungsFolgeSchwarzWeissKopie = this.muehleComponent.stellungsFolgeSchwarzWeiss.slice();
+            this.muehleComponent.stellungsFolgeZobristKeysKopie = this.muehleComponent.stellungsFolgeZobristKeys.slice();
 
             this.muehleComponent.stellungsFolgeKopie = this.muehleComponent.stellungsFolge.slice();
 
@@ -154,7 +154,7 @@ export class SpielThread // extends Thread // TODO worker child process erstelle
             zugNr++;
             console.log('ZugNr: ' + zugNr);
 
-            this.muehleComponent.stellungsFolgeSchwarzWeiss.push(this.muehleComponent.getAktuelleStellung().getWeissSchwarz());
+            this.muehleComponent.stellungsFolgeZobristKeys.push(this.muehleComponent.getAktuelleStellung().getZobristHashWert());
             this.muehleComponent.stellungsFolge.push(this.muehleComponent.getAktuelleStellung());
 
             if (this.muehleComponent.getAktuelleStellung().getAnzahlSteine()[0] < 3)
@@ -181,13 +181,16 @@ export class SpielThread // extends Thread // TODO worker child process erstelle
                 this.muehleComponentZuEnde = true; // Schwarz wurde eingesperrt
                 this.muehleComponent.log('Schwarz wurde eingesperrt ==> Weiss hat gewonnen!');
             }
-            else if (this.muehleComponent.stellungsFolgeSchwarzWeiss.indexOf(
-                     this.muehleComponent.getAktuelleStellung().getWeissSchwarz()) !==
-                         this.muehleComponent.stellungsFolgeSchwarzWeiss.length - 1)
+            
+            else if (this.muehleComponent.stellungsFolgeZobristKeys.indexOf(
+                     ///// this.muehleComponent.getAktuelleStellung().getWeissSchwarz()) !==
+                     this.muehleComponent.getAktuelleStellung().getZobristHashWert()) !==
+                         this.muehleComponent.stellungsFolgeZobristKeys.length - 1)
             {
                 this.muehleComponentZuEnde = true; // Remi
                 this.muehleComponent.log('>>> Remie wegen Stellungswiederholung <<<');
             }
+            
 
         }
     }

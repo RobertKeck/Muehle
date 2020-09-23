@@ -21,17 +21,17 @@ export class MuehleComponent implements ISpiel
 {
     title = 'muehle-app';
     logTextField = '';
-    comboboxZugtiefe = 5;
+    comboboxZugtiefe = 7;
     comboboxWeiss = 'Computer';
     comboboxSchwarz = 'Computer';
 
     computerEngineWeiss: IEngine = null;
     computerEngineSchwarz: IEngine = null;
     // iMuehleFrame: IMuehleFrame;
-    stellungsFolgeSchwarzWeiss: number[] = new Array<number>();
+    stellungsFolgeZobristKeys: number[] = new Array<number>();
     stellungsFolge: IStellungAllgemein[] = new Array<IStellungAllgemein>();
     aktuelleStellungKopie: Stellung;
-    stellungsFolgeSchwarzWeissKopie: number[];
+    stellungsFolgeZobristKeysKopie: number[];
     stellungsFolgeKopie: Array<IStellungAllgemein>;
     private aktuelleStellung: Stellung  =  null;
     spielThread: SpielThread;
@@ -87,7 +87,7 @@ export class MuehleComponent implements ISpiel
 
             this.aktuelleStellung = this.aktuelleStellungKopie.kopiereStellung();
 
-            this.stellungsFolgeSchwarzWeiss = this.stellungsFolgeSchwarzWeissKopie.slice();
+            this.stellungsFolgeZobristKeys = this.stellungsFolgeZobristKeysKopie.slice();
             this.stellungsFolge = this.stellungsFolgeKopie.slice();
 
             // ermittle die aktuell gueltigen Zuege
@@ -109,12 +109,12 @@ export class MuehleComponent implements ISpiel
         {
 
             this.stellungsFolge.pop();
-            this.stellungsFolgeSchwarzWeiss.pop();
+            this.stellungsFolgeZobristKeys.pop();
             this.aktuelleStellung = (this.stellungsFolge[(this.stellungsFolge.length - 1)] as Stellung).kopiereStellung();
             const zugGen = new ZugGenerator();
             this.aktuelleStellungKopie = this.aktuelleStellung.kopiereStellung();
 
-            this.stellungsFolgeSchwarzWeissKopie = this.stellungsFolgeSchwarzWeiss.slice();
+            this.stellungsFolgeZobristKeysKopie = this.stellungsFolgeZobristKeys.slice();
             this.stellungsFolgeKopie = this.stellungsFolge.slice();
 
             // ermittle die aktuell gueltigen Zuege
@@ -159,7 +159,7 @@ export class MuehleComponent implements ISpiel
     {
         // this.iMuehleFrame.log(meldung);
         this.logTextField += meldung;
-        console.log(meldung);
+        //// console.log(meldung);
     }
 
 
@@ -174,16 +174,16 @@ export class MuehleComponent implements ISpiel
         this.aktuelleStellung.setAnzahlSteineAussen(initialAnzahlSteine);
         this.aktuelleStellung.anzahlMuehlen[0] = 0;
         this.aktuelleStellung.anzahlMuehlen[1] = 0;
-//        this.aktuelleStellung.anzahlOffenerMuehlen[0] = 0;
-//        this.aktuelleStellung.anzahlOffenerMuehlen[1] = 0;
+        // this.aktuelleStellung.anzahlOffenerMuehlen[0] = 0;
+        // this.aktuelleStellung.anzahlOffenerMuehlen[1] = 0;
         this.aktuelleStellung.anzahlFreierNachbarfelder[0] = 0;
         this.aktuelleStellung.anzahlFreierNachbarfelder[1] = 0;
         for (let i = 0; i < 17; i++)
         {
             this.aktuelleStellung.muehle[0][i] = 0;
             this.aktuelleStellung.muehle[1][i] = 0;
-//            this.aktuelleStellung.offeneMuehle[0][i] = 0;
-//            this.aktuelleStellung.offeneMuehle[1][i] = 0;
+            this.aktuelleStellung.offeneMuehle[0][i] = 0;
+            this.aktuelleStellung.offeneMuehle[1][i] = 0;
         }
         const leeresSpielfeld = [0, 0];
         this.aktuelleStellung.setSpielpositionen(leeresSpielfeld);
@@ -192,9 +192,9 @@ export class MuehleComponent implements ISpiel
 
         this.computerMensch[0] = Util.MENSCH; // Weiss
         this.computerMensch[1] = Util.MENSCH; // Schwarz
-        this.stellungsFolgeSchwarzWeiss = new Array<number>();
+        this.stellungsFolgeZobristKeys = new Array<number>();
         this.stellungsFolge =  new Array<IStellungAllgemein>();
-        this.stellungsFolgeSchwarzWeiss.push(this.aktuelleStellung.weissSchwarz);
+        this.stellungsFolgeZobristKeys.push(this.aktuelleStellung.weissSchwarz);
         this.stellungsFolge.push(this.aktuelleStellung);
     }
 

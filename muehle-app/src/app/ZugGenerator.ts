@@ -393,15 +393,25 @@ export class ZugGenerator
                                   pruefeSymmetrisch: boolean): void
     {
 
-        let weissSchwarz = stellung.getAnzahlSteineAussen()[0] + stellung.getAnzahlSteineAussen()[1];
+        /*
+        let weissSchwarz = stellung.getAnzahlSteineAussen()[0];
         // tslint:disable-next-line: no-bitwise
-        weissSchwarz <<= 24;
-        weissSchwarz += stellung.getSpielpositionen()[0];
+        weissSchwarz <<= 4;
+        
+        weissSchwarz += stellung.getAnzahlSteineAussen()[1];
+        // tslint:disable-next-line: no-bitwise
+        weissSchwarz <<= 4;
+        */
+
+        /*
+        // weissSchwarz <<= 24;
+        let weissSchwarz = stellung.getSpielpositionen()[0];
         // tslint:disable-next-line: no-bitwise
         weissSchwarz <<= 24;
         weissSchwarz += stellung.getSpielpositionen()[1];
 
         stellung.weissSchwarz = weissSchwarz;
+        */
 
         // Wenn es zu dieser Stellung bereits eine symmetrische Stellung in der Liste gibt, wird sie nicht in die Liste mitaufgenommen.
         if (pruefeSymmetrisch)

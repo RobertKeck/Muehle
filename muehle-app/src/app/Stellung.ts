@@ -28,7 +28,7 @@ export class Stellung implements IStellung
      * spielpositionen in eine grosse Hashtabelle gespeichert werden
      *
      */
-    spielpositionen: number[] = new Array();
+    private spielpositionen: number[] = new Array();
     private anzahlSteineAussen: number[] = new Array();
     private anzahlSteine: number[] = new Array();
     private amZug: number;         // 1 = Weiss, -1 = Schwarz

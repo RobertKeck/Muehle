@@ -19,7 +19,8 @@ export class KeckEngine implements IEngine{
 
   protected muehleBerechnung: MuehleBerechnung = new MuehleBerechnung(this);
 
-  stellungsFolgeSchwarzWeiss: Array<number> = new Array<number>();
+  stellungsFolgeZobristKeys: Array<number> = new Array<number>();
+
 
 
   protected gewichte: Gewichte = new Gewichte();
