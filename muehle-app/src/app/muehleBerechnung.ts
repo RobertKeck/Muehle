@@ -69,9 +69,7 @@ export class MuehleBerechnung
         if (this.keckEngine.stellungsFolgeZobristKeys.indexOf(stellung.getZobristHashWert()) !==
                                 this.keckEngine.stellungsFolgeZobristKeys.length - 1)
         {
-            if (stellung.getAnzahlSteineAussen()[0] === 0 && stellung.getAnzahlSteineAussen()[1] === 0){
                return 0; // Remi
-            }
         }
 
 

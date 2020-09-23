@@ -9,6 +9,7 @@ export class ZugGenerator
     private anzSymmetrieStellungen = 0;
 
     ZOBRIST_ZUFALLSWERTE: number[][] = [[], []];
+    ZOBRIST_ZUFALLSWERTE_FUER_AUSSEN: number[][] = [[], []];
     private readonly PHASE_I = 1;
     private readonly PHASE_II  = 2;
     private readonly PHASE_III = 3;
@@ -429,6 +430,10 @@ export class ZugGenerator
         stellung.zobristHashWert ^= this.ZOBRIST_ZUFALLSWERTE[eigene][posBis];
         // tslint:disable-next-line: no-bitwise
         stellung.zobristHashWert ^= this.ZOBRIST_ZUFALLSWERTE[fremde][posSteinWeg];
+        
+        stellung.zobristHashWert ^= this.ZOBRIST_ZUFALLSWERTE_FUER_AUSSEN[eigene][stellung.getAnzahlSteineAussen()[eigene]];
+        stellung.zobristHashWert ^= this.ZOBRIST_ZUFALLSWERTE_FUER_AUSSEN[fremde][stellung.getAnzahlSteineAussen()[fremde]];
+
         //        long weissSchwarzHash = weissSchwarz;
         //        weissSchwarzHash <<= 5;
         //        weissSchwarzHash += laengeStellungsfolge + 1;  // aktuelle Zugtiefe muss unbedingt in Hash-Tabelle beruecksichtigt werden
@@ -462,6 +467,15 @@ export class ZugGenerator
                 this.ZOBRIST_ZUFALLSWERTE[j][i] =  (Math.random() * Util.HASHFELDGROESSE);
             }
         }
+        for (let i = 1; i < 9; i++)
+        {
+            for (let j = 0; j <= 1; j++)
+            {
+                this.ZOBRIST_ZUFALLSWERTE_FUER_AUSSEN[j][i] =  (Math.random() * Util.HASHFELDGROESSE);
+            }
+        }      
+
+      
     }
     /**
      * Die Anzahl der Muehlen, sowie die Anzahl der offenen Muehlen aendert sich, wenn ein Stein bewegt wird.
