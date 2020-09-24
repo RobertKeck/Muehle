@@ -10,6 +10,9 @@ import {IZug} from './IZug';
 import {IEngine} from './IEngine';
 import {ISpiel} from './ISpiel';
 import {IStellung} from './IStellung';
+import { FormGroup, FormControl, Validators} from '@angular/forms';
+
+
 
 
 @Component({
@@ -17,11 +20,19 @@ import {IStellung} from './IStellung';
   templateUrl: './muehle.component.html',
   styleUrls: ['./muehle.component.css']
 })
+
 export class MuehleComponent implements ISpiel
 {
+
+    zugtiefeList: any = [1, 2, 3, 4, 5, 6, 7];
+  
+    formGroupZugtiefe = new FormGroup({
+      formControlZugtiefe: new FormControl(5, Validators.required)
+    });
+
     title = 'muehle-app';
     logTextField = '';
-    comboboxZugtiefe = 7;
+    grafikTextField = '';
     comboboxWeiss = 'Computer';
     comboboxSchwarz = 'Computer';
 
@@ -47,32 +58,16 @@ export class MuehleComponent implements ISpiel
      */
     computerMensch: number[] = new Array<number>();
 
-
-
-    /**
-     * Main
-     *
-     */
-    /*
-    public static void main(String[] args)
-    {
-        Spiel spiel = new Spiel();
-    }
-    */
-
-
-    /**
-     * Konstruktor
-     */
     /*
     construtor(): void
     {
-        /////// this.iMuehleFrame = new MuehleFrame(this);
-        this.erstelleStartStellung();
-        /////// this.iMuehleFrame.zeichneStellung(this.aktuelleStellung);
+         this.formGroupZugtiefe.controls['formControlZugtiefe'].setValue(4, {onlySelf: true});
     }
     */
-
+    
+    getCBZugtiefe(): number{
+      return this.formGroupZugtiefe.value.formControlZugtiefe;
+    }   
     /**
      * Spiele-Thread wird gestoppt
      */
@@ -162,7 +157,16 @@ export class MuehleComponent implements ISpiel
         //// console.log(meldung);
     }
 
-
+    /**
+     * Ausgabe der meldung in JTextfield und in Console
+     *
+     */
+    zeichneStellung(meldung: string): void
+    {
+        
+        this.grafikTextField = meldung;
+        
+    }
 
     erstelleStartStellung(): void
     {
@@ -203,11 +207,12 @@ export class MuehleComponent implements ISpiel
     {
         // TODO
         // this.iMuehleFrame.zeichneStellung(this.aktuelleStellung);
-        this.log(this.aktuelleStellung.toString());
+        this.zeichneStellung(this.aktuelleStellung.toString());
     }
 
     start(): void
     {
+       
         this.erstelleStartStellung();
         this.logTextField += 'Spiel wurde gestartet..';
         if (this.spielThread != null)
@@ -332,9 +337,7 @@ export class MuehleComponent implements ISpiel
        }
        return null;
     }
-    getCBZugtiefe(): number{
-      return this.comboboxZugtiefe;
-    }
+
     getCBWeiss(): string{
       return this.comboboxWeiss;
     }

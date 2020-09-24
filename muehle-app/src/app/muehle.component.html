@@ -1,7 +1,36 @@
-Muehle
 
+ <form [formGroup]="formGroupZugtiefe">
+          
+        <div class="form-group">
+            
+            <label for="formControlZugtiefe">Zugtiefe: </label>
+            
+            <select formControlName="formControlZugtiefe" class="form-control" >
+                <!--
+                <option disabled>Select Zugtiefe</option>     
+                <option>Select Zugtiefe</option>              
+                <option *ngFor="let z of zugtiefeList">{{z}}</option>
+                 -->
+                <option value="1">1</option> 
+                <option value="2">2 </option> 
+                <option value="3">3</option> 
+                <option value="4">4</option> 
+                <option value="5" selected>5</option> 
+                <option value="6">6</option> 
+                <option value="7">7</option> 
+            </select>
 
-<textarea [(ngModel)]='logTextField' rows='30' cols='120'>
-</textarea>
+        </div>
+
+    </form>
+
 
 <button (click)='start()' type='button'>Start</button>
+
+<textarea [(ngModel)]='grafikTextField' rows='30' cols='120'>
+</textarea>
+
+<textarea [(ngModel)]='logTextField' rows='10' cols='120'>
+</textarea>
+
+

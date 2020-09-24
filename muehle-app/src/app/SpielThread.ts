@@ -26,8 +26,8 @@ export class SpielThread // extends Thread // TODO worker child process erstelle
         this.muehleComponentZuEnde = false;
         const zugGen = new ZugGenerator();
         let zugNr = 0;
-        let zugtiefeMax = this.muehleComponent.getCBZugtiefe();
-
+        let zugtiefeMax: number = Number(this.muehleComponent.getCBZugtiefe());
+        
 
         while (!this.muehleComponentZuEnde)
         { // && muehleComponent.threadGestoppt == false){

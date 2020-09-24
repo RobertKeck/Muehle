@@ -9,7 +9,7 @@ export class ZugGenerator
     private anzSymmetrieStellungen = 0;
 
     ZOBRIST_ZUFALLSWERTE: number[][] = [[], []];
-    ZOBRIST_ZUFALLSWERTE_FUER_AUSSEN: number[][] = [[], []];
+    ZOBRIST_ZUFALLSWERTE_FUER_AUSSEN: number[][] = [[], []]; 
     private readonly PHASE_I = 1;
     private readonly PHASE_II  = 2;
     private readonly PHASE_III = 3;
@@ -471,7 +471,7 @@ export class ZugGenerator
         {
             for (let j = 0; j <= 1; j++)
             {
-                this.ZOBRIST_ZUFALLSWERTE_FUER_AUSSEN[j][i] =  (Math.random() * Util.HASHFELDGROESSE);
+                this.ZOBRIST_ZUFALLSWERTE_FUER_AUSSEN[j][i] =  (Math.random() * Util.HASHFELDGROESSE); 
             }
         }      
 

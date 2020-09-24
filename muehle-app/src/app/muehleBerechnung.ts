@@ -65,7 +65,6 @@ export class MuehleBerechnung
         /*--------------------------------------------------------------------------*/
         // Wenn das erste Vorkommen der Stellung nicht am Vektorende ist,
         // dann liegt Stellungswiederholung vor
-        //// if (this.keckEngine.stellungsFolgeZobristKeys.indexOf(stellung.getWeissSchwarz()) !==
         if (this.keckEngine.stellungsFolgeZobristKeys.indexOf(stellung.getZobristHashWert()) !==
                                 this.keckEngine.stellungsFolgeZobristKeys.length - 1)
         {
