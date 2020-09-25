@@ -22,14 +22,47 @@
 
         </div>
 
-    </form>
+</form>
+
+<form [formGroup]="formGroupWeiss">
+          
+    <div class="form-group">
+        
+        <label for="formControlWeiss">Weiss: </label>
+        
+        <select formControlName="formControlWeiss" class="form-control" >
+            <option *ngFor="let z of moeglicheSpieler">{{z}}</option>
+        </select>
+
+    </div>
+
+</form>
+
+<form [formGroup]="formGroupSchwarz">
+          
+    <div class="form-group">
+        
+        <label for="formControlSchwarz">Schwarz: </label>
+        
+        <select formControlName="formControlSchwarz" class="form-control" >
+            <option *ngFor="let z of moeglicheSpieler">{{z}}</option>
+        </select>
+
+    </div>
+
+</form>
 
 
 <button (click)='start()' type='button'>Start</button>
 
+<button (click)='stoppeSpiel()' type='button'>Stoppe Spiel</button>
+<button (click)='zugZurueck()' type='button'>Zug Zurueck</button>
+<button (click)='loescheSpielfeld()' type='button'>Loesche Spielfeld</button>
+<br><br>
+
 <textarea [(ngModel)]='grafikTextField' rows='30' cols='120'>
 </textarea>
-
+<br><br>
 <textarea [(ngModel)]='logTextField' rows='10' cols='120'>
 </textarea>
 

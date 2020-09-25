@@ -83,13 +83,15 @@ export class SpielThread // extends Thread // TODO worker child process erstelle
                     this.muehleComponent.log('Schwarz ist am Zug');
                 }
                 this.muehleComponent.setNeuerZugMensch(null);
+                /***************************************
+                 * TODO  change this*/
                 while (this.muehleComponent.getNeuerZugMensch() == null)
                 {
                     // do nothing  -- warte auf Benutzereingabe
                 }
                 this.muehleComponent.setAktuelleStellung(this.muehleComponent.ermittleStellungZumGueltigenZug(
                         this.muehleComponent.getNeuerZugMensch() as Zug).kopiereStellung());
-
+                /******************************************/
             }
             else
             {

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { SpielThread } from './SpielThread';
 import {ZugGenerator} from './ZugGenerator';
 import {Stellung} from './Stellung';
@@ -11,6 +11,7 @@ import {IEngine} from './IEngine';
 import {ISpiel} from './ISpiel';
 import {IStellung} from './IStellung';
 import { FormGroup, FormControl, Validators} from '@angular/forms';
+import { Worker } from 'worker_threads';
 
 
 
@@ -21,20 +22,27 @@ import { FormGroup, FormControl, Validators} from '@angular/forms';
   styleUrls: ['./muehle.component.css']
 })
 
-export class MuehleComponent implements ISpiel
+export class MuehleComponent implements OnInit
 {
 
     zugtiefeList: any = [1, 2, 3, 4, 5, 6, 7];
+    moeglicheSpieler: any = ['Mensch', 'Computer'];
   
     formGroupZugtiefe = new FormGroup({
       formControlZugtiefe: new FormControl(5, Validators.required)
     });
 
+    formGroupWeiss = new FormGroup({
+        formControlWeiss: new FormControl('Mensch', Validators.required)
+    });
+    formGroupSchwarz = new FormGroup({
+        formControlSchwarz: new FormControl('Mensch', Validators.required)
+    });   
+
     title = 'muehle-app';
     logTextField = '';
     grafikTextField = '';
-    comboboxWeiss = 'Computer';
-    comboboxSchwarz = 'Computer';
+
 
     computerEngineWeiss: IEngine = null;
     computerEngineSchwarz: IEngine = null;
@@ -58,16 +66,23 @@ export class MuehleComponent implements ISpiel
      */
     computerMensch: number[] = new Array<number>();
 
-    /*
-    construtor(): void
-    {
-         this.formGroupZugtiefe.controls['formControlZugtiefe'].setValue(4, {onlySelf: true});
-    }
-    */
     
+   ngOnInit() {
+       this.formGroupZugtiefe.controls['formControlZugtiefe'].setValue(5, {onlySelf: true});
+       this.erstelleStartStellung();
+       this.zeichneSpielfeld();
+   }
+
     getCBZugtiefe(): number{
       return this.formGroupZugtiefe.value.formControlZugtiefe;
     }   
+    getCBWeiss(): string{
+        // return this.comboboxWeiss;
+        return this.formGroupWeiss.value.formControlWeiss;
+    }
+    getCBSchwarz(): string{
+        return this.formGroupSchwarz.value.formControlSchwarz;
+    }    
     /**
      * Spiele-Thread wird gestoppt
      */
@@ -135,12 +150,12 @@ export class MuehleComponent implements ISpiel
           this.computerEngineWeiss = null;
           this.computerEngineSchwarz = null;
 
-          ausgabe += 'Das Spiel wurde beendet und das ';
+          ausgabe += 'Das Spiel wurde beendet und ';
         }
         this.erstelleStartStellung();
-        ausgabe += 'Spielfeld wurde gel�scht.';
+        ausgabe += 'das Spielfeld wurde geloescht.';
         this.log(ausgabe);
-        //// this.iMuehleFrame.zeichneStellung(this.aktuelleStellung);
+        this.zeichneSpielfeld();
 
     }
 
@@ -213,13 +228,17 @@ export class MuehleComponent implements ISpiel
     start(): void
     {
        
-        this.erstelleStartStellung();
+        
         this.logTextField += 'Spiel wurde gestartet..';
         if (this.spielThread != null)
         {
             this.spielThread.stop();
         }
+        const worker = new Worker('./worker.ts');
         this.spielThread = new SpielThread(this);
+
+
+
         this.computerEngineWeiss = new KeckEngine();
         this.computerEngineSchwarz = new KeckEngine();
         // computerEngineSchwarz = new ZufallsEngine();
@@ -338,10 +357,5 @@ export class MuehleComponent implements ISpiel
        return null;
     }
 
-    getCBWeiss(): string{
-      return this.comboboxWeiss;
-    }
-    getCBSchwarz(): string{
-      return this.comboboxSchwarz;
-    }
+
 }
