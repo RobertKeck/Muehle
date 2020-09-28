@@ -11,7 +11,9 @@ import {IEngine} from './IEngine';
 import {ISpiel} from './ISpiel';
 import {IStellung} from './IStellung';
 import { FormGroup, FormControl, Validators} from '@angular/forms';
-import { Worker } from 'worker_threads';
+import { MyWorker } from './worker';
+
+
 
 
 
@@ -25,9 +27,10 @@ import { Worker } from 'worker_threads';
 export class MuehleComponent implements OnInit
 {
 
-    zugtiefeList: any = [1, 2, 3, 4, 5, 6, 7];
+    worker: Worker;
+    zugtiefeList: any = [1, 2, 3, 4, 5, 6, 7, 8, 9];
     moeglicheSpieler: any = ['Mensch', 'Computer'];
-  
+
     formGroupZugtiefe = new FormGroup({
       formControlZugtiefe: new FormControl(5, Validators.required)
     });
@@ -37,7 +40,7 @@ export class MuehleComponent implements OnInit
     });
     formGroupSchwarz = new FormGroup({
         formControlSchwarz: new FormControl('Mensch', Validators.required)
-    });   
+    });
 
     title = 'muehle-app';
     logTextField = '';
@@ -66,23 +69,24 @@ export class MuehleComponent implements OnInit
      */
     computerMensch: number[] = new Array<number>();
 
-    
-   ngOnInit() {
-       this.formGroupZugtiefe.controls['formControlZugtiefe'].setValue(5, {onlySelf: true});
+
+
+   ngOnInit(): void {
+       this.formGroupZugtiefe.controls.formControlZugtiefe.setValue(5, {onlySelf: true});
        this.erstelleStartStellung();
        this.zeichneSpielfeld();
    }
 
     getCBZugtiefe(): number{
       return this.formGroupZugtiefe.value.formControlZugtiefe;
-    }   
+    }
     getCBWeiss(): string{
         // return this.comboboxWeiss;
         return this.formGroupWeiss.value.formControlWeiss;
     }
     getCBSchwarz(): string{
         return this.formGroupSchwarz.value.formControlSchwarz;
-    }    
+    }
     /**
      * Spiele-Thread wird gestoppt
      */
@@ -90,6 +94,7 @@ export class MuehleComponent implements OnInit
     {
       this.computerEngineWeiss = null;
       this.computerEngineSchwarz = null;
+      this.worker.terminate();
 
       if (this.spielThread != null && this.spielThread.isAlive())
       {
@@ -178,9 +183,9 @@ export class MuehleComponent implements OnInit
      */
     zeichneStellung(meldung: string): void
     {
-        
+
         this.grafikTextField = meldung;
-        
+
     }
 
     erstelleStartStellung(): void
@@ -227,15 +232,18 @@ export class MuehleComponent implements OnInit
 
     start(): void
     {
-       
-        
+
+
         this.logTextField += 'Spiel wurde gestartet..';
         if (this.spielThread != null)
         {
             this.spielThread.stop();
         }
-        const worker = new Worker('./worker.ts');
+        this.worker = new MyWorker();
+
+        this.worker.postMessage('Hallo Worker');
         this.spielThread = new SpielThread(this);
+
 
 
 

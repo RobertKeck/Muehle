@@ -20,14 +20,14 @@ export class SpielThread // extends Thread // TODO worker child process erstelle
 
 
     // muehleComponentschleife
-    public run(): void
-    {
+    public run = async (): Promise<void> => {
+
 
         this.muehleComponentZuEnde = false;
         const zugGen = new ZugGenerator();
         let zugNr = 0;
         let zugtiefeMax: number = Number(this.muehleComponent.getCBZugtiefe());
-        
+
 
         while (!this.muehleComponentZuEnde)
         { // && muehleComponent.threadGestoppt == false){
@@ -183,7 +183,7 @@ export class SpielThread // extends Thread // TODO worker child process erstelle
                 this.muehleComponentZuEnde = true; // Schwarz wurde eingesperrt
                 this.muehleComponent.log('Schwarz wurde eingesperrt ==> Weiss hat gewonnen!');
             }
-            
+
             else if (this.muehleComponent.stellungsFolgeZobristKeys.indexOf(
                      ///// this.muehleComponent.getAktuelleStellung().getWeissSchwarz()) !==
                      this.muehleComponent.getAktuelleStellung().getZobristHashWert()) !==
@@ -192,7 +192,7 @@ export class SpielThread // extends Thread // TODO worker child process erstelle
                 this.muehleComponentZuEnde = true; // Remi
                 this.muehleComponent.log('>>> Remie wegen Stellungswiederholung <<<');
             }
-            
+
 
         }
     }

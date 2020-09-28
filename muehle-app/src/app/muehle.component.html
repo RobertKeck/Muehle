@@ -1,23 +1,26 @@
 
  <form [formGroup]="formGroupZugtiefe">
-          
+
         <div class="form-group">
-            
+
             <label for="formControlZugtiefe">Zugtiefe: </label>
-            
+
             <select formControlName="formControlZugtiefe" class="form-control" >
                 <!--
-                <option disabled>Select Zugtiefe</option>     
-                <option>Select Zugtiefe</option>              
-                <option *ngFor="let z of zugtiefeList">{{z}}</option>
+                <option disabled>Select Zugtiefe</option>
+                <option>Select Zugtiefe</option>
+                -->
+                <option *ngFor="let z of zugtiefeList" selected>{{z}}</option>
+
+                 <!--
+                <option value="1">1</option>
+                <option value="2">2 </option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5" selected>5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
                  -->
-                <option value="1">1</option> 
-                <option value="2">2 </option> 
-                <option value="3">3</option> 
-                <option value="4">4</option> 
-                <option value="5" selected>5</option> 
-                <option value="6">6</option> 
-                <option value="7">7</option> 
             </select>
 
         </div>
@@ -25,11 +28,11 @@
 </form>
 
 <form [formGroup]="formGroupWeiss">
-          
+
     <div class="form-group">
-        
+
         <label for="formControlWeiss">Weiss: </label>
-        
+
         <select formControlName="formControlWeiss" class="form-control" >
             <option *ngFor="let z of moeglicheSpieler">{{z}}</option>
         </select>
@@ -39,11 +42,11 @@
 </form>
 
 <form [formGroup]="formGroupSchwarz">
-          
+
     <div class="form-group">
-        
+
         <label for="formControlSchwarz">Schwarz: </label>
-        
+
         <select formControlName="formControlSchwarz" class="form-control" >
             <option *ngFor="let z of moeglicheSpieler">{{z}}</option>
         </select>

@@ -30,7 +30,8 @@
     "src/app/gui/IMuehleFrame.ts",
     "src/app/muehle.component.ts",
     "src/main.ts",
-    "src/polyfills.ts"
+    "src/polyfills.ts",
+    "src/app/worker.ts"
   ],
 
   "include": [
