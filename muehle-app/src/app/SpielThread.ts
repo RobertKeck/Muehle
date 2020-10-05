@@ -201,8 +201,10 @@ export class SpielThread // extends Thread // TODO worker child process erstelle
     }
     stop(): void{
       this.muehleComponentZuEnde = true;
+      this.muehleComponent.worker.terminate();
     }
     start(): void{
       this.run();
+      //// this.muehleComponent.worker.terminate();
     }
 }

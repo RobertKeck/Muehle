@@ -11,7 +11,8 @@ import {IEngine} from './IEngine';
 import {ISpiel} from './ISpiel';
 import {IStellung} from './IStellung';
 import { FormGroup, FormControl, Validators} from '@angular/forms';
-import { MyWorker } from './worker';
+// import { MyWorker } from './worker';
+// import * as workerPath from 'file-loader?name=[name].js!./worker';
 
 
 
@@ -27,7 +28,7 @@ import { MyWorker } from './worker';
 export class MuehleComponent implements OnInit
 {
 
-    worker: Worker;
+    worker;
     zugtiefeList: any = [1, 2, 3, 4, 5, 6, 7, 8, 9];
     moeglicheSpieler: any = ['Mensch', 'Computer'];
 
@@ -36,10 +37,10 @@ export class MuehleComponent implements OnInit
     });
 
     formGroupWeiss = new FormGroup({
-        formControlWeiss: new FormControl('Mensch', Validators.required)
+        formControlWeiss: new FormControl('Computer', Validators.required)
     });
     formGroupSchwarz = new FormGroup({
-        formControlSchwarz: new FormControl('Mensch', Validators.required)
+        formControlSchwarz: new FormControl('Computer', Validators.required)
     });
 
     title = 'muehle-app';
@@ -68,6 +69,7 @@ export class MuehleComponent implements OnInit
      * computerMensch[1] = MENSCH -- Schwarz wird vom Menschen gespielt
      */
     computerMensch: number[] = new Array<number>();
+
 
 
 
@@ -214,8 +216,8 @@ export class MuehleComponent implements OnInit
         this.aktuelleStellung.setBewertung(0);
         this.aktuelleStellung.weissSchwarz = 0;
 
-        this.computerMensch[0] = Util.MENSCH; // Weiss
-        this.computerMensch[1] = Util.MENSCH; // Schwarz
+        this.computerMensch[0] = Util.COMPUTER; // Weiss
+        this.computerMensch[1] = Util.COMPUTER; // Schwarz
         this.stellungsFolgeZobristKeys = new Array<number>();
         this.stellungsFolge =  new Array<IStellungAllgemein>();
         this.stellungsFolgeZobristKeys.push(this.aktuelleStellung.weissSchwarz);
@@ -239,9 +241,64 @@ export class MuehleComponent implements OnInit
         {
             this.spielThread.stop();
         }
-        this.worker = new MyWorker();
 
-        this.worker.postMessage('Hallo Worker');
+        /*
+        const workerFunction = 'startWorker';
+        const dataObj = '(' + workerFunction + ')();'; // here is the trick to convert the above fucntion to string
+        // firefox adds "use strict"; to any function which might block worker execution so knock it off
+        const blob = new Blob([dataObj.replace('"use strict";', '')]);
+        */
+        /*
+        const blobURL = (window.URL ? URL : webkitURL).createObjectURL({blob,
+            type: 'application/javascript; charset=utf-8'
+        });
+        */
+       /*
+        const blobURL = (window.URL ? URL : webkitURL).createObjectURL(blob);
+
+
+        this.worker = new Worker(blobURL); // spawn new worker
+
+
+        // tslint:disable-next-line: only-arrow-functions
+        this.worker.onmessage = function(e): void {
+            console.log('Worker said: ', e.data); // message received from worker
+        };
+        this.worker.postMessage('some input to worker'); // Send data to our worker.
+*/
+
+        // URL.createObjectURL
+        window.URL = window.URL || window.webkitURL;
+
+        // "Server response", used in all examples
+        const response = 'self.onmessage=function(e){postMessage(\'Worker: \'+e.data);}';
+
+        let blob;
+        try {
+            blob = new Blob([response], {type: 'application/javascript'});
+        } catch (e) { // Backwards-compatibility
+            // window.MSBlobBuilder = window.MSBlobBuilder || window.MSWebKitBlobBuilder || window.MozBlobBuilder;
+            blob = new MSBlobBuilder();
+            blob.append(response);
+            blob = blob.getBlob();
+        }
+        this.worker = new Worker(URL.createObjectURL(blob));
+
+        // Test, used in all examples:
+        this.worker.onmessage = function(e): void {
+            if (e.data === 'Start'){
+              let i = 0;
+              while (1 === 1){
+                  i++;
+                  console.log('>>>>' + i);
+              }
+            }
+        };
+        this.worker.postMessage('Start');
+
+
+
+
         this.spielThread = new SpielThread(this);
 
 

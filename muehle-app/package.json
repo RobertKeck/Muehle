@@ -46,6 +46,8 @@
     "ts-node": "~8.3.0",
     "tslint": "~6.1.0",
     "typescript": "~3.9.5",
+    "webpack": "^4.44.2",
+    "webpack-cli": "^3.3.12",
     "worker-loader": "^3.0.3"
   },
   "browser": {

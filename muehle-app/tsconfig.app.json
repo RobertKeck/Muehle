@@ -29,9 +29,10 @@
     "src/app/ZugGenerator.ts",
     "src/app/gui/IMuehleFrame.ts",
     "src/app/muehle.component.ts",
+    "src/app/worker.ts",
+    "src/app/file-loader.d.ts",
     "src/main.ts",
-    "src/polyfills.ts",
-    "src/app/worker.ts"
+    "src/polyfills.ts"
   ],
 
   "include": [
