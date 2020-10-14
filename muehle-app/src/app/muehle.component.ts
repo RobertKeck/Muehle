@@ -10,7 +10,7 @@ import {IZug} from './IZug';
 import {IEngine} from './IEngine';
 import {ISpiel} from './ISpiel';
 import {IStellung} from './IStellung';
-import { FormGroup, FormControl, Validators} from '@angular/forms';
+// import { FormGroup, FormControl, Validators} from '@angular/forms';
 // import { MyWorker } from './worker';
 // import * as workerPath from 'file-loader?name=[name].js!./worker';
 
@@ -267,6 +267,8 @@ export class MuehleComponent implements OnInit
         this.worker.postMessage('some input to worker'); // Send data to our worker.
 */
 
+/*
+
         // URL.createObjectURL
         window.URL = window.URL || window.webkitURL;
 
@@ -296,8 +298,18 @@ export class MuehleComponent implements OnInit
         };
         this.worker.postMessage('Start');
 
-
-
+*/
+        if (typeof Worker !== 'undefined') {
+            // Create a new
+            this.worker = new Worker('./app.worker', { type: 'module' });
+            this.worker.onmessage = ({ data }) => {
+            console.log(`page got message: ${data}`);
+            };
+            this.worker.postMessage('hello');
+        } else {
+            // Web workers are not supported in this environment.
+            // You should add a fallback so that your program still executes correctly.
+        }
 
         this.spielThread = new SpielThread(this);
 
