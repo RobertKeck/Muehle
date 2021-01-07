@@ -129,7 +129,7 @@ export class MuehleBerechnung
             // rekursiver Aufruf
             // ---------------------------------
             // Neuen Zug in Stellungsfolge speichern
-            ///////////////this.keckEngine.stellungsFolgeZobristKeys.push(stellungNeu.getWeissSchwarz());
+            /////////////// this.keckEngine.stellungsFolgeZobristKeys.push(stellungNeu.getWeissSchwarz());
             this.keckEngine.stellungsFolgeZobristKeys.push(stellungNeu.getZobristHashWert());
 
             const wertneu = -this.ermittleBestenZug(stellungNeu, (zugtiefe + 1), -beta, -alpha);

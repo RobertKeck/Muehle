@@ -21,13 +21,14 @@
     "@angular/router": "~10.0.14",
     "@ng-select/ng-select": "^5.0.3",
     "@types/jest": "^26.0.14",
+    "ng-form-group": "^1.4.2",
     "properties-reader": "^2.1.1",
     "rxjs": "~6.5.5",
     "tslib": "^2.0.0",
     "zone.js": "~0.10.3"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "~0.1000.8",
+    "@angular-devkit/build-angular": "^0.1002.0",
     "@angular/cli": "~10.0.8",
     "@angular/compiler-cli": "~10.0.14",
     "@types/jasmine": "~3.5.0",
@@ -46,8 +47,6 @@
     "ts-node": "~8.3.0",
     "tslint": "~6.1.0",
     "typescript": "~3.9.5",
-    "webpack": "^4.44.2",
-    "webpack-cli": "^3.3.12",
     "worker-loader": "^3.0.3"
   },
   "browser": {

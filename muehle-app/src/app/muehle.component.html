@@ -36,7 +36,7 @@
         <label for="formControlWeiss">Weiss: </label>
 
         <select formControlName="formControlWeiss" class="form-control" >
-            <option *ngFor="let z of moeglicheSpieler">{{z}}</option>
+            <option *ngFor="let z of weissMoeglicheSpieler">{{z}}</option>
         </select>
 
     </div>
@@ -50,7 +50,7 @@
         <label for="formControlSchwarz">Schwarz: </label>
 
         <select formControlName="formControlSchwarz" class="form-control" >
-            <option *ngFor="let z of moeglicheSpieler">{{z}}</option>
+            <option *ngFor="let z of schwarzMoeglicheSpieler">{{z}}</option>
         </select>
 
     </div>
@@ -63,12 +63,35 @@
 <button (click)='stoppeSpiel()' type='button'>Stoppe Spiel</button>
 <button (click)='zugZurueck()' type='button'>Zug Zurueck</button>
 <button (click)='loescheSpielfeld()' type='button'>Loesche Spielfeld</button>
-<br><br>
+<br>
 
+<!--
 <textarea [(ngModel)]='grafikTextField' rows='30' cols='120'>
 </textarea>
 <br><br>
-<textarea [(ngModel)]='logTextField' rows='10' cols='120'>
+-->
+<canvas #canvas width="600" height="600" id="spielfeld-canvas"></canvas>
+
+<br><br>
+<textarea [(ngModel)]='logTextField' rows='2' cols='71' >
 </textarea>
+
+<br><br>
+
+<!--
+<div class="form-group">
+  <label>posVon:</label>
+  <input class="form-control" [(ngModel)]="posVon" required minlength="1" name="posVon" type="number"/>
+  <label>posBis:</label>
+  <input class="form-control" [(ngModel)]="posBis" required minlength="1" name="posBis" type="number"/>
+  <label>posSteinWeg:</label>
+  <input class="form-control" [(ngModel)]="posSteinWeg" required minlength="1" name="posSteinWeg" type="number"/>
+
+</div>
+
+<button (click)='spieleZug()' type='button'>SpieleZug</button>
+-->
+
+
 
 

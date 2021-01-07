@@ -83,7 +83,7 @@ export class KeckEngine implements IEngine{
   * @return String
   */
  public getEngineName(): string{
-  return 'KeckEngine';
+  return 'K-Engine';
  }
 
 

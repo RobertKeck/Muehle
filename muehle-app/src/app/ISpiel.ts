@@ -10,7 +10,7 @@ export interface ISpiel
     stoppeSpiel(): void;
 
     /**
-     * Das aktuell laufende Spiel wird, wenn noch nicht geschehen, gestoppt, anschlie�end wird die Startstellung aufgebaut.
+     * Das aktuell laufende Spiel wird, wenn noch nicht geschehen, gestoppt, anschliessend wird die Startstellung aufgebaut.
      */
     loescheSpielfeld(): void;
 

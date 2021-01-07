@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { SpielThread } from './SpielThread';
+import {Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import {SpielThread } from './SpielThread';
 import {ZugGenerator} from './ZugGenerator';
 import {Stellung} from './Stellung';
 import {Util} from './Util';
@@ -8,16 +8,12 @@ import {KeckEngine} from './KeckEngine';
 import {IStellungAllgemein} from './IStellungAllgemein';
 import {IZug} from './IZug';
 import {IEngine} from './IEngine';
-import {ISpiel} from './ISpiel';
 import {IStellung} from './IStellung';
-// import { FormGroup, FormControl, Validators} from '@angular/forms';
+import {spielbrettGrafik} from './gui/spielbrettGrafik';
+import {muehleMouseListener} from './gui/muehleMouseListener';
+import { FormGroup, FormControl, Validators} from '@angular/forms';
 // import { MyWorker } from './worker';
 // import * as workerPath from 'file-loader?name=[name].js!./worker';
-
-
-
-
-
 
 @Component({
   selector: 'app-root',
@@ -27,17 +23,31 @@ import {IStellung} from './IStellung';
 
 export class MuehleComponent implements OnInit
 {
+    // canvas = document.getElementById('spielfeld-canvas') as HTMLCanvasElement;
+    @ViewChild('canvas', { static: true })
+    canvas: ElementRef<HTMLCanvasElement>;
 
-    worker;
+    worker: Worker;
+    spielGrafik: spielbrettGrafik = new spielbrettGrafik(this);
+
     zugtiefeList: any = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-    moeglicheSpieler: any = ['Mensch', 'Computer'];
+    weissMoeglicheSpieler: any = ['Mensch', 'Computer'];
+    schwarzMoeglicheSpieler: any = ['Computer', 'Mensch'];
+
+    posVon: number;
+    posBis: number;
+    posSteinWeg: number;
+    menschKannSchlagen = false;
+    mousePosVon = -1;
+    mousePosBis = -1;
+    faktor  = 0.333333333;
 
     formGroupZugtiefe = new FormGroup({
       formControlZugtiefe: new FormControl(5, Validators.required)
     });
 
     formGroupWeiss = new FormGroup({
-        formControlWeiss: new FormControl('Computer', Validators.required)
+        formControlWeiss: new FormControl('Mensch', Validators.required)
     });
     formGroupSchwarz = new FormGroup({
         formControlSchwarz: new FormControl('Computer', Validators.required)
@@ -46,6 +56,12 @@ export class MuehleComponent implements OnInit
     title = 'muehle-app';
     logTextField = '';
     grafikTextField = '';
+
+    spielsteinInBewegung = false;
+    spielsteinBewegungX = 0;
+    spielsteinBewegungY = 0;
+    spielfeldgroesse: number;
+    mouseListener: muehleMouseListener;
 
 
     computerEngineWeiss: IEngine = null;
@@ -70,13 +86,54 @@ export class MuehleComponent implements OnInit
      */
     computerMensch: number[] = new Array<number>();
 
-
+    readonly grafikSpielsteinPositionen: number[][] = [
+      [0, 0 ],
+      [1, 1 ], [4, 1 ], [7, 1 ],
+      [2, 2 ], [4, 2 ], [6, 2 ],
+      [3, 3 ], [4, 3 ], [5, 3 ],
+      [1, 4 ], [2, 4 ], [3, 4 ], [5, 4 ], [6, 4 ], [7, 4 ],
+      [3, 5 ], [4, 5 ], [5, 5 ],
+      [2, 6 ], [4, 6 ], [6, 6 ],
+      [1, 7 ], [4, 7 ], [7, 7 ]];
 
 
    ngOnInit(): void {
-       this.formGroupZugtiefe.controls.formControlZugtiefe.setValue(5, {onlySelf: true});
-       this.erstelleStartStellung();
-       this.zeichneSpielfeld();
+
+      const fensterBreite = this.canvas.nativeElement.offsetHeight;
+      const fensterHoehe = this.canvas.nativeElement.offsetWidth;
+
+      if (fensterBreite < fensterHoehe)
+      {
+          this.spielfeldgroesse = fensterBreite;
+      }
+      else
+      {
+          this.spielfeldgroesse = fensterHoehe;
+      }
+      this.formGroupZugtiefe.controls.formControlZugtiefe.setValue(5, {onlySelf: true});
+      this.erstelleStartStellung();
+      this.zeichneSpielfeld();
+
+      this.mouseListener = new muehleMouseListener(this);
+
+       /*
+       if (typeof Worker !== 'undefined') {
+        this.worker = new Worker('./app.worker', { type: 'module' });
+        this.worker.onmessage = ({ data }) => {
+          let i = 0;
+          setInterval(function(){
+            i++;
+            console.log(`>>>>>>>>>>>>>>>>>>>>> page got message: ${data}`);
+            console.log(i);
+          }, 500);
+
+        };
+        this.worker.postMessage('hello');
+       } else {
+        // Web workers are not supported in this environment.
+        // You should add a fallback so that your program still executes correctly.
+       }
+       */
    }
 
     getCBZugtiefe(): number{
@@ -94,10 +151,6 @@ export class MuehleComponent implements OnInit
      */
     stoppeSpiel(): void
     {
-      this.computerEngineWeiss = null;
-      this.computerEngineSchwarz = null;
-      this.worker.terminate();
-
       if (this.spielThread != null && this.spielThread.isAlive())
       {
             this.spielThread.stop();
@@ -113,14 +166,11 @@ export class MuehleComponent implements OnInit
                     this.stellungsFolge.length, false);
 
             this.log('Das Spiel wurde unterbrochen  -  mit \'Start\' kann es fortgesetzt werden.');
-            //// this.iMuehleFrame.zeichneStellung(this.aktuelleStellung);
         }
-
     }
     zugZurueck(): void
     {
-
-        this.stoppeSpiel();
+        this.spielThread.stop();
 
         if (this.stellungsFolge.length > 1)
         {
@@ -163,10 +213,7 @@ export class MuehleComponent implements OnInit
         ausgabe += 'das Spielfeld wurde geloescht.';
         this.log(ausgabe);
         this.zeichneSpielfeld();
-
     }
-
-
 
     /**
      * Ausgabe der meldung in JTextfield und in Console
@@ -175,7 +222,8 @@ export class MuehleComponent implements OnInit
     log(meldung: string): void
     {
         // this.iMuehleFrame.log(meldung);
-        this.logTextField += meldung;
+        // this.logTextField += meldung;
+        this.logTextField = meldung;
         //// console.log(meldung);
     }
 
@@ -185,7 +233,7 @@ export class MuehleComponent implements OnInit
      */
     zeichneStellung(meldung: string): void
     {
-
+        this.spielGrafik.zeichneSpielBrett(this.canvas.nativeElement.offsetHeight, this.canvas.nativeElement.offsetWidth);
         this.grafikTextField = meldung;
 
     }
@@ -216,7 +264,7 @@ export class MuehleComponent implements OnInit
         this.aktuelleStellung.setBewertung(0);
         this.aktuelleStellung.weissSchwarz = 0;
 
-        this.computerMensch[0] = Util.COMPUTER; // Weiss
+        this.computerMensch[0] = Util.MENSCH; // Weiss
         this.computerMensch[1] = Util.COMPUTER; // Schwarz
         this.stellungsFolgeZobristKeys = new Array<number>();
         this.stellungsFolge =  new Array<IStellungAllgemein>();
@@ -229,6 +277,7 @@ export class MuehleComponent implements OnInit
     {
         // TODO
         // this.iMuehleFrame.zeichneStellung(this.aktuelleStellung);
+        this.spielGrafik.zeichneSpielBrett(800, 800);
         this.zeichneStellung(this.aktuelleStellung.toString());
     }
 
@@ -242,74 +291,24 @@ export class MuehleComponent implements OnInit
             this.spielThread.stop();
         }
 
-        /*
-        const workerFunction = 'startWorker';
-        const dataObj = '(' + workerFunction + ')();'; // here is the trick to convert the above fucntion to string
-        // firefox adds "use strict"; to any function which might block worker execution so knock it off
-        const blob = new Blob([dataObj.replace('"use strict";', '')]);
-        */
-        /*
-        const blobURL = (window.URL ? URL : webkitURL).createObjectURL({blob,
-            type: 'application/javascript; charset=utf-8'
-        });
-        */
-       /*
-        const blobURL = (window.URL ? URL : webkitURL).createObjectURL(blob);
-
-
-        this.worker = new Worker(blobURL); // spawn new worker
-
-
-        // tslint:disable-next-line: only-arrow-functions
-        this.worker.onmessage = function(e): void {
-            console.log('Worker said: ', e.data); // message received from worker
-        };
-        this.worker.postMessage('some input to worker'); // Send data to our worker.
-*/
-
 /*
-
-        // URL.createObjectURL
-        window.URL = window.URL || window.webkitURL;
-
-        // "Server response", used in all examples
-        const response = 'self.onmessage=function(e){postMessage(\'Worker: \'+e.data);}';
-
-        let blob;
-        try {
-            blob = new Blob([response], {type: 'application/javascript'});
-        } catch (e) { // Backwards-compatibility
-            // window.MSBlobBuilder = window.MSBlobBuilder || window.MSWebKitBlobBuilder || window.MozBlobBuilder;
-            blob = new MSBlobBuilder();
-            blob.append(response);
-            blob = blob.getBlob();
-        }
-        this.worker = new Worker(URL.createObjectURL(blob));
-
-        // Test, used in all examples:
-        this.worker.onmessage = function(e): void {
-            if (e.data === 'Start'){
-              let i = 0;
-              while (1 === 1){
-                  i++;
-                  console.log('>>>>' + i);
-              }
-            }
-        };
-        this.worker.postMessage('Start');
-
-*/
         if (typeof Worker !== 'undefined') {
-            // Create a new
-            this.worker = new Worker('./app.worker', { type: 'module' });
-            this.worker.onmessage = ({ data }) => {
-            console.log(`page got message: ${data}`);
-            };
-            this.worker.postMessage('hello');
+          this.worker = new Worker('./app.worker', { type: 'module' });
+          this.worker.onmessage = ({ data }) => {
+            let i = 0;
+            while (true){
+              i++;
+              console.log(`>>>>>>>>>>>>>>>>>>>>> page got message: ${data}`);
+              console.log(i);
+            }
+          };
+          this.worker.postMessage('hello');
         } else {
-            // Web workers are not supported in this environment.
-            // You should add a fallback so that your program still executes correctly.
+          // Web workers are not supported in this environment.
+          // You should add a fallback so that your program still executes correctly.
         }
+*/
+
 
         this.spielThread = new SpielThread(this);
 
@@ -367,35 +366,20 @@ export class MuehleComponent implements OnInit
         return false;
     }
 
-
-    /*
-    getMuehleFrame(): IMuehleFrame
-    {
-        return this.iMuehleFrame;
-    }
-    */
-
-
     getAktuelleStellung(): IStellung
     {
         return this.aktuelleStellung;
     }
-
-
 
     setAktuelleStellung(aktuelleStellung: IStellungAllgemein): void
     {
         this.aktuelleStellung = aktuelleStellung as Stellung;
     }
 
-
-
     getNeuerZugMensch(): IZug
     {
         return this.neuerZugMensch;
     }
-
-
 
     setNeuerZugMensch(neuerZug: IZug): void
     {
@@ -433,6 +417,16 @@ export class MuehleComponent implements OnInit
        }
        return null;
     }
+    spieleZug(): void
+    {
+      this.neuerZugMensch = new Zug();
+      this.neuerZugMensch.setPosVon(this.posVon);
+      this.neuerZugMensch.setPosBis(this.posBis);
+      this.neuerZugMensch.setPosSteinWeg(this.posSteinWeg);
+      this.setNeuerZugMensch(this.neuerZugMensch);
+    }
 
 
 }
+
+
