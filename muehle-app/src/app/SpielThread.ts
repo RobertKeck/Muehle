@@ -53,7 +53,7 @@ export class SpielThread
                     // ermittle die aktuell gueltigen Zuege
             spielThread.muehleComponent.alleAktuellGueltigenStellungen = spielThread.zugGen.ermittleAlleZuege(
                                                               spielThread.muehleComponent.getAktuelleStellung() as Stellung,
-                                                              spielThread.muehleComponent.stellungsFolge.length, false);
+                                                                    spielThread.muehleComponent.stellungsFolge.length, false);
             /*------------------------------------------------------------------------------------------------------
              *                                   Mensch ist am Zug
              *-----------------------------------------------------------------------------------------------------*/
@@ -81,6 +81,7 @@ export class SpielThread
                 if (spielThread.muehleComponent.getAktuelleStellung().getAmZug() === Util.WEISS){
                     spielThread.muehleComponent.log(spielThread.muehleComponent.computerEngineWeiss.getEngineName() + ' ist mit Weiss am Zug. Bitte warten...');
                     // Computerzug wird von computerEngineWeiss durchgefuehrt
+
                     computerZug = spielThread.muehleComponent.computerEngineWeiss.
                                         berechneNeuenZug(spielThread.muehleComponent.stellungsFolge,
                     spielThread.zugtiefeMax);
@@ -88,6 +89,7 @@ export class SpielThread
                 else{
                     spielThread.muehleComponent.log(spielThread.muehleComponent.computerEngineSchwarz.getEngineName() + ' ist mit Schwarz am Zug. Bitte warten...');
                     // Computerzug wird von computerEngineSchwarz durchgefuehrt
+                    //setTimeout(() => console.log('wait 01 sec'), 100);
                     computerZug = spielThread.muehleComponent.computerEngineSchwarz.
                                     berechneNeuenZug(spielThread.muehleComponent.stellungsFolge,
                     spielThread.zugtiefeMax);

@@ -1,97 +1,90 @@
 
- <form [formGroup]="formGroupZugtiefe">
+ <div class="container">
+    <div class="row">
+      <div class="col-4">
+          1 - 4
+      </div>
+      <div class="col-4">
+        2 - 4
+      </div>
+      <div class="col-4">
+        3 - 4
+      </div>
+      <div class="col-4">
+        4 - 4
+    </div>
+  </div>
+    <div class="row">
+        <div class="col-4">
+            <form [formGroup]="formGroupZugtiefe">
+                    <div class="form-group">
+                        <label for="formControlZugtiefe">Zugtiefe: </label>
+                        <select formControlName="formControlZugtiefe" class="form-control" >
+                            <!--
+                            <option disabled>Select Zugtiefe</option>
+                            <option>Select Zugtiefe</option>
+                            -->
 
-        <div class="form-group">
-
-            <label for="formControlZugtiefe">Zugtiefe: </label>
-
-            <select formControlName="formControlZugtiefe" class="form-control" >
-                <!--
-                <option disabled>Select Zugtiefe</option>
-                <option>Select Zugtiefe</option>
-                -->
-
-                <!--
-                <option *ngFor="let z of zugtiefeList" selected>{{z}}</option>
-                -->
-
-                <option value="1">1</option>
-                <option value="2">2 </option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5" selected>5</option>
-                <option value="6">6</option>
-                <option value="7">7</option>
-
-            </select>
-
+                            <!--
+                            <option *ngFor="let z of zugtiefeList" selected>{{z}}</option>
+                            -->
+                            <option value="1">1</option>
+                            <option value="2">2 </option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5" selected>5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                        </select>
+                    </div>
+            </form>
         </div>
-
-</form>
-
-<form [formGroup]="formGroupWeiss">
-
-    <div class="form-group">
-
-        <label for="formControlWeiss">Weiss: </label>
-
-        <select formControlName="formControlWeiss" class="form-control" >
-            <option *ngFor="let z of weissMoeglicheSpieler">{{z}}</option>
-        </select>
-
+        <div class="col-4">
+            <form [formGroup]="formGroupWeiss">
+                <div class="form-group">
+                    <label for="formControlWeiss">Weiss: </label>
+                    <select formControlName="formControlWeiss" class="form-control" >
+                        <option *ngFor="let z of weissMoeglicheSpieler">{{z}}</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+        <div class="col-4">
+            <form [formGroup]="formGroupSchwarz">
+                <div class="form-group">
+                    <label for="formControlSchwarz">Schwarz: </label>
+                    <select formControlName="formControlSchwarz" class="form-control" >
+                        <option *ngFor="let z of schwarzMoeglicheSpieler">{{z}}</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-3">
+            <button (click)='start()' type='button'>Start</button>
+        </div>
+        <div class="col-3">
+            <button (click)='stoppeSpiel()' type='button'>Stoppe Spiel</button>
+        </div>
+        <div class="col-3">
+            <button (click)='zugZurueck()' type='button'>Zug Zurueck</button>
+        </div>
+        <div class="col-3">
+            <button (click)='loescheSpielfeld()' type='button'>Loesche Spielfeld</button>
+        </div>
     </div>
 
-</form>
-
-<form [formGroup]="formGroupSchwarz">
-
-    <div class="form-group">
-
-        <label for="formControlSchwarz">Schwarz: </label>
-
-        <select formControlName="formControlSchwarz" class="form-control" >
-            <option *ngFor="let z of schwarzMoeglicheSpieler">{{z}}</option>
-        </select>
-
+    <div class="row">
+        <div class="col-12" >
+            <canvas #canvas  id="spielfeld-canvas" width="600" height="600"></canvas>
+        </div>
     </div>
 
-</form>
-
-
-<button (click)='start()' type='button'>Start</button>
-
-<button (click)='stoppeSpiel()' type='button'>Stoppe Spiel</button>
-<button (click)='zugZurueck()' type='button'>Zug Zurueck</button>
-<button (click)='loescheSpielfeld()' type='button'>Loesche Spielfeld</button>
-<br>
-
-<!--
-<textarea [(ngModel)]='grafikTextField' rows='30' cols='120'>
-</textarea>
-<br><br>
--->
-<canvas #canvas width="600" height="600" id="spielfeld-canvas"></canvas>
-
-<br><br>
-<textarea [(ngModel)]='logTextField' rows='2' cols='71' >
-</textarea>
-
-<br><br>
-
-<!--
-<div class="form-group">
-  <label>posVon:</label>
-  <input class="form-control" [(ngModel)]="posVon" required minlength="1" name="posVon" type="number"/>
-  <label>posBis:</label>
-  <input class="form-control" [(ngModel)]="posBis" required minlength="1" name="posBis" type="number"/>
-  <label>posSteinWeg:</label>
-  <input class="form-control" [(ngModel)]="posSteinWeg" required minlength="1" name="posSteinWeg" type="number"/>
+    <div class="row">
+        <div class="col-12">
+            <textarea [(ngModel)]='logTextField' rows='2' > </textarea>
+        </div>
+    </div>
 
 </div>
-
-<button (click)='spieleZug()' type='button'>SpieleZug</button>
--->
-
-
-
-

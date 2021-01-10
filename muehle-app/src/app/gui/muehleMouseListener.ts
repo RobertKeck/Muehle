@@ -28,13 +28,28 @@ export class muehleMouseListener
         }
         this.abstand = Math.round(this.muehleComponent.spielfeldgroesse / 9 );
         this.muehleComponent.canvas.nativeElement.addEventListener('mousedown', this.mousePressed.bind(this), false);
+        this.muehleComponent.canvas.nativeElement.addEventListener('touchstart', this.fingerPressed.bind(this), false);
         this.muehleComponent.canvas.nativeElement.addEventListener('mouseup', this.mouseReleased.bind(this), false);
+        this.muehleComponent.canvas.nativeElement.addEventListener('touchend', this.fingerReleased.bind(this), false);
         this.muehleComponent.canvas.nativeElement.addEventListener('mousemove', this.mouseDragged.bind(this), false);
+        this.muehleComponent.canvas.nativeElement.addEventListener('touchmove', this.fingerDragged.bind(this), false);
+
     }
 
-    mousePressed(evt: MouseEvent): void
-    {
+    mousePressed(evt: MouseEvent): void{
+        this.pressed(evt.offsetX, evt.offsetY);
+    }
+    fingerPressed(evt: TouchEvent): void{
+        const touchobj = evt.changedTouches[0]; // erster Finger
+        evt.preventDefault();
+        const rect = this.muehleComponent.canvas.nativeElement.getBoundingClientRect();
 
+        this.pressed(touchobj.pageX - rect.left, touchobj.pageY - rect.top);
+    }
+    pressed(pressedX: number, pressedY: number): void
+    {
+        console.log('pressedX: ' + pressedX);
+        console.log('pressedY: ' + pressedY);
         // Wenn das Spiel nicht am laufen ist, darf kein Spielstein verschoben werden. Dasselbe
         // gilt, wenn der Mensch nicht am Zug ist.
         if (!this.muehleComponent.istSpielGestartet() || !this.muehleComponent.istMenschAmZug())
@@ -65,8 +80,8 @@ export class muehleMouseListener
             const xBis = xVon + durchmesser;
             const yBis = yVon + durchmesser;
 
-            if (evt.offsetX >= xVon && evt.offsetX <= xBis && evt.offsetY >= yVon
-                    && evt.offsetY <= yBis)
+            if (pressedX >= xVon && pressedX <= xBis && pressedY >= yVon
+                    && pressedY <= yBis)
             {
                 posAktuell = posNr;
             }
@@ -87,8 +102,8 @@ export class muehleMouseListener
                             eigen, posAktuell))
                     {
                         this.muehleComponent.spielsteinInBewegung = true;
-                        this.muehleComponent.spielsteinBewegungX = evt.offsetX;
-                        this.muehleComponent.spielsteinBewegungY = evt.offsetY;
+                        this.muehleComponent.spielsteinBewegungX = pressedX;
+                        this.muehleComponent.spielsteinBewegungY = pressedY;
                         this.muehleComponent.zeichneStellung('');
                         this.muehleComponent.mousePosVon = posAktuell;
                     }
@@ -112,7 +127,17 @@ export class muehleMouseListener
 
         }
     }
-    mouseReleased(evt: MouseEvent): void
+    mouseReleased(evt: MouseEvent): void{
+        this.released(evt.offsetX, evt.offsetY);
+    }
+
+    fingerReleased(evt: TouchEvent): void{
+        const touchobj = evt.changedTouches[0]; // erster Finger
+        evt.preventDefault();
+        const rect = this.muehleComponent.canvas.nativeElement.getBoundingClientRect();
+        this.released(touchobj.clientX - rect.left, touchobj.clientY - rect.top);
+    }
+    released(releasedX: number, releasedY: number): void
     {
         // Wenn das Spiel nicht am laufen ist, darf kein Spielstein verschoben werden. Dasselbe
         // gilt, wenn der Mensch nicht am Zug ist.
@@ -147,8 +172,8 @@ export class muehleMouseListener
                 const xBis = xVon + durchmesser;
                 const yBis = yVon + durchmesser;
 
-                if (evt.offsetX >= xVon && evt.offsetX <= xBis && evt.offsetY >= yVon
-                        && evt.offsetY <= yBis)
+                if (releasedX >= xVon && releasedX <= xBis && releasedY >= yVon
+                        && releasedY <= yBis)
                 {
                     this.muehleComponent.mousePosBis = posNr;
                 }
@@ -182,12 +207,22 @@ export class muehleMouseListener
         this.muehleComponent.zeichneSpielfeld();
     }
 
-    mouseDragged(evt: MouseEvent): void
+    mouseDragged(evt: MouseEvent): void{
+        this.dragged(evt.offsetX, evt.offsetY);
+    }
+
+    fingerDragged(evt: TouchEvent): void{
+        const touchobj = evt.changedTouches[0]; // erster Finger
+        evt.preventDefault();
+        const rect = this.muehleComponent.canvas.nativeElement.getBoundingClientRect();
+        this.dragged(touchobj.clientX - rect.left, touchobj.clientY - rect.top);
+    }
+    dragged(draggedX: number, draggedY: number): void
     {
         if (this.muehleComponent.spielsteinInBewegung)
         {
-            this.muehleComponent.spielsteinBewegungX = evt.offsetX;
-            this.muehleComponent.spielsteinBewegungY = evt.offsetY;
+            this.muehleComponent.spielsteinBewegungX = draggedX;
+            this.muehleComponent.spielsteinBewegungY = draggedY;
             this.muehleComponent.zeichneStellung('');
         }
     }

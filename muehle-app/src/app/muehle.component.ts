@@ -12,8 +12,7 @@ import {IStellung} from './IStellung';
 import {spielbrettGrafik} from './gui/spielbrettGrafik';
 import {muehleMouseListener} from './gui/muehleMouseListener';
 import { FormGroup, FormControl, Validators} from '@angular/forms';
-// import { MyWorker } from './worker';
-// import * as workerPath from 'file-loader?name=[name].js!./worker';
+
 
 @Component({
   selector: 'app-root',
@@ -116,6 +115,7 @@ export class MuehleComponent implements OnInit
 
       this.mouseListener = new muehleMouseListener(this);
 
+      // TODO: 
        /*
        if (typeof Worker !== 'undefined') {
         this.worker = new Worker('./app.worker', { type: 'module' });
