@@ -22,17 +22,13 @@ import { FormGroup, FormControl, Validators} from '@angular/forms';
 
 export class MuehleComponent implements OnInit
 {
-    // canvas = document.getElementById('spielfeld-canvas') as HTMLCanvasElement;
     @ViewChild('canvas', { static: true })
     canvas: ElementRef<HTMLCanvasElement>;
-
-    worker: Worker;
+    worker: Worker; // Todo : worker nutzen um ermittleBestenZug in einem Thread auszufuehren
     spielGrafik: spielbrettGrafik = new spielbrettGrafik(this);
-
     zugtiefeList: any = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-    weissMoeglicheSpieler: any = ['Mensch', 'Computer'];
-    schwarzMoeglicheSpieler: any = ['Computer', 'Mensch'];
-
+    weissMoeglicheSpieler: any = ['Human', 'Computer'];
+    schwarzMoeglicheSpieler: any = ['Computer', 'Human'];
     posVon: number;
     posBis: number;
     posSteinWeg: number;
@@ -46,7 +42,7 @@ export class MuehleComponent implements OnInit
     });
 
     formGroupWeiss = new FormGroup({
-        formControlWeiss: new FormControl('Mensch', Validators.required)
+        formControlWeiss: new FormControl('Human', Validators.required)
     });
     formGroupSchwarz = new FormGroup({
         formControlSchwarz: new FormControl('Computer', Validators.required)
@@ -54,18 +50,13 @@ export class MuehleComponent implements OnInit
 
     title = 'muehle-app';
     logTextField = '';
-    grafikTextField = '';
-
     spielsteinInBewegung = false;
     spielsteinBewegungX = 0;
     spielsteinBewegungY = 0;
     spielfeldgroesse: number;
     mouseListener: muehleMouseListener;
-
-
     computerEngineWeiss: IEngine = null;
     computerEngineSchwarz: IEngine = null;
-    // iMuehleFrame: IMuehleFrame;
     stellungsFolgeZobristKeys: number[] = new Array<number>();
     stellungsFolge: IStellungAllgemein[] = new Array<IStellungAllgemein>();
     aktuelleStellungKopie: Stellung;
@@ -75,7 +66,6 @@ export class MuehleComponent implements OnInit
     spielThread: SpielThread;
     alleAktuellGueltigenStellungen: Stellung[];
     alleAktuellGueltigenStellungenKopie: Stellung[];
-    // private neueStellungMensch: Stellung = null;
     private neuerZugMensch: Zug = null;
     /**
      * computerMensch[0] = COMPUTER -- Weiss wird vom Computer gespielt
@@ -114,26 +104,6 @@ export class MuehleComponent implements OnInit
       this.zeichneSpielfeld();
 
       this.mouseListener = new muehleMouseListener(this);
-
-      // TODO: 
-       /*
-       if (typeof Worker !== 'undefined') {
-        this.worker = new Worker('./app.worker', { type: 'module' });
-        this.worker.onmessage = ({ data }) => {
-          let i = 0;
-          setInterval(function(){
-            i++;
-            console.log(`>>>>>>>>>>>>>>>>>>>>> page got message: ${data}`);
-            console.log(i);
-          }, 500);
-
-        };
-        this.worker.postMessage('hello');
-       } else {
-        // Web workers are not supported in this environment.
-        // You should add a fallback so that your program still executes correctly.
-       }
-       */
    }
 
     getCBZugtiefe(): number{
@@ -216,27 +186,15 @@ export class MuehleComponent implements OnInit
     }
 
     /**
-     * Ausgabe der meldung in JTextfield und in Console
+     * Ausgabe der meldung in logTextField
      *
      */
     log(meldung: string): void
     {
-        // this.iMuehleFrame.log(meldung);
-        // this.logTextField += meldung;
         this.logTextField = meldung;
-        //// console.log(meldung);
     }
 
-    /**
-     * Ausgabe der meldung in JTextfield und in Console
-     *
-     */
-    zeichneStellung(meldung: string): void
-    {
-        this.spielGrafik.zeichneSpielBrett(this.canvas.nativeElement.offsetHeight, this.canvas.nativeElement.offsetWidth);
-        this.grafikTextField = meldung;
 
-    }
 
     erstelleStartStellung(): void
     {
@@ -275,10 +233,7 @@ export class MuehleComponent implements OnInit
 
     zeichneSpielfeld(): void
     {
-        // TODO
-        // this.iMuehleFrame.zeichneStellung(this.aktuelleStellung);
-        this.spielGrafik.zeichneSpielBrett(800, 800);
-        this.zeichneStellung(this.aktuelleStellung.toString());
+      this.spielGrafik.zeichneSpielBrett(this.canvas.nativeElement.offsetWidth, this.canvas.nativeElement.offsetHeight);
     }
 
     start(): void

@@ -1,24 +1,10 @@
 
  <div class="container">
     <div class="row">
-      <div class="col-sm">
-          1 - 4
-      </div>
-      <div class="col-sm">
-        2 - 4
-      </div>
-      <div class="col-sm">
-        3 - 4
-      </div>
-      <div class="col-sm">
-        4 - 4
-    </div>
-  </div>
-    <div class="row">
         <div class="col-4">
             <form [formGroup]="formGroupZugtiefe">
                     <div class="form-group">
-                        <label for="formControlZugtiefe">Zugtiefe: </label>
+                        <label for="formControlZugtiefe">Depth: </label>
                         <select formControlName="formControlZugtiefe" class="form-control" >
                             <!--
                             <option disabled>Select Zugtiefe</option>
@@ -42,7 +28,7 @@
         <div class="col-4">
             <form [formGroup]="formGroupWeiss">
                 <div class="form-group">
-                    <label for="formControlWeiss">Weiss: </label>
+                    <label for="formControlWeiss">White: </label>
                     <select formControlName="formControlWeiss" class="form-control" >
                         <option *ngFor="let z of weissMoeglicheSpieler">{{z}}</option>
                     </select>
@@ -52,7 +38,7 @@
         <div class="col-4">
             <form [formGroup]="formGroupSchwarz">
                 <div class="form-group">
-                    <label for="formControlSchwarz">Schwarz: </label>
+                    <label for="formControlSchwarz">Black: </label>
                     <select formControlName="formControlSchwarz" class="form-control" >
                         <option *ngFor="let z of schwarzMoeglicheSpieler">{{z}}</option>
                     </select>
@@ -60,31 +46,17 @@
             </form>
         </div>
     </div>
-    <div class="row">
-        <div class="col-3">
-            <button (click)='start()' type='button'>Start</button>
-        </div>
-        <div class="col-3">
-            <button (click)='stoppeSpiel()' type='button'>Stoppe Spiel</button>
-        </div>
-        <div class="col-3">
-            <button (click)='zugZurueck()' type='button'>Zug Zurueck</button>
-        </div>
-        <div class="col-3">
-            <button (click)='loescheSpielfeld()' type='button'>Loesche Spielfeld</button>
-        </div>
+    <div class="mittig">
+            <button (click)='start()' type='button' class='mitPlatz'>Start</button>
+            <button (click)='stoppeSpiel()' type='button' class='mitPlatz'>Stop</button>
+            <button (click)='zugZurueck()' type='button' class='mitPlatz'>Back</button>
+            <button (click)='loescheSpielfeld()' type='button'>Delete</button>
     </div>
 
-    <div class="row">
-        <div class="col-12" >
-            <canvas #canvas  id="spielfeld-canvas" width="600" height="600"></canvas>
-        </div>
-    </div>
+    <canvas #canvas  class="MuehleCanvas"  width="600" height="700"></canvas>
 
     <div class="row">
-        <div class="col-12">
-            <textarea [(ngModel)]='logTextField' rows='2' > </textarea>
-        </div>
+            <textarea [(ngModel)]='logTextField' rows='2' class="col-12"> </textarea>
     </div>
 
 </div>

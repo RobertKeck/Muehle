@@ -24,13 +24,13 @@ export class spielbrettGrafik
         {
             this.muehleComponent.spielfeldgroesse = fensterHoehe;
         }
-        this.abstand = Math.round(this.muehleComponent.spielfeldgroesse / 9 );
+        this.abstand = Math.round(this.muehleComponent.spielfeldgroesse / 8 );
 
         this.ctx = this.muehleComponent.canvas.nativeElement.getContext('2d');
         this.ctx.lineWidth = 1;
         // Spielbrett zeichnen
         this.ctx.fillStyle = 'white';
-        this.ctx.fillRect(0, 0, this.muehleComponent.spielfeldgroesse, this.muehleComponent.spielfeldgroesse);
+        this.ctx.fillRect(0, 0, fensterBreite, fensterHoehe);
         this.ctx.fillStyle = hintergrundfarbe;
         this.ctx.fillRect(this.abstand / 2, this.abstand / 2,
                           7 * this.abstand, 7 * this.abstand);

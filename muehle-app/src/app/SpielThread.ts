@@ -38,13 +38,13 @@ export class SpielThread
             if (spielThread.muehleComponent.getAktuelleStellung().getAmZug() === -1) {
                 eigen = 1;
             }
-            if (spielThread.muehleComponent.getCBWeiss() === ('Mensch')){
+            if (spielThread.muehleComponent.getCBWeiss() === ('Human')){
                 spielThread.muehleComponent.computerMensch[0] = Util.MENSCH;
             }
             else{
                 spielThread.muehleComponent.computerMensch[0] = Util.COMPUTER;
             }
-            if (spielThread.muehleComponent.getCBSchwarz() === ('Mensch')){
+            if (spielThread.muehleComponent.getCBSchwarz() === ('Human')){
                 spielThread.muehleComponent.computerMensch[1] = Util.MENSCH;
             }
             else{
