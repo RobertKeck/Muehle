@@ -7,9 +7,7 @@ import {Stellung} from './../Stellung';
 export class muehleMouseListener
 {
     muehleComponent: MuehleComponent;
-    abstand: number;
-    durchmesser: number;
-    radius: number;
+
 
     zugGen: ZugGenerator = new ZugGenerator();
     alleAktuellGueltigenStellungen: Array<Stellung>;
@@ -17,8 +15,8 @@ export class muehleMouseListener
     constructor(muehleComponent: MuehleComponent)
     {
         this.muehleComponent = muehleComponent;
-        const fensterBreite = this.muehleComponent.canvas.nativeElement.offsetHeight;
-        const fensterHoehe = this.muehleComponent.canvas.nativeElement.offsetWidth;
+        const fensterBreite = this.muehleComponent.canvas.nativeElement.offsetWidth;
+        const fensterHoehe = this.muehleComponent.canvas.nativeElement.offsetHeight;
 
         if (fensterBreite < fensterHoehe)
         {
@@ -28,9 +26,9 @@ export class muehleMouseListener
         {
             this.muehleComponent.spielfeldgroesse = fensterHoehe;
         }
-        this.abstand = Math.round(this.muehleComponent.spielfeldgroesse / 8 );
-        this.durchmesser = Math.round(this.abstand * (1 - this.muehleComponent.faktor));
-        this.radius = this.durchmesser / 2;
+        this.muehleComponent.abstand = Math.round(this.muehleComponent.spielfeldgroesse / 8 );
+        this.muehleComponent.durchmesser = Math.round(this.muehleComponent.abstand * (1 - this.muehleComponent.faktor));
+        this.muehleComponent.radius = this.muehleComponent.durchmesser / 2;
         this.muehleComponent.canvas.nativeElement.addEventListener('mousedown', this.mousePressed.bind(this), false);
         this.muehleComponent.canvas.nativeElement.addEventListener('touchstart', this.fingerPressed.bind(this), false);
         this.muehleComponent.canvas.nativeElement.addEventListener('mouseup', this.mouseReleased.bind(this), false);
@@ -75,11 +73,11 @@ export class muehleMouseListener
         let posAktuell = -1;
         for (let posNr = 0; posNr < 25; posNr++)
         {
-            const xVon = Math.round(this.abstand * (this.muehleComponent.grafikSpielsteinPositionen[posNr][0]) - this.radius);
-            const yVon = Math.round(this.abstand * (this.muehleComponent.grafikSpielsteinPositionen[posNr][1]) - this.radius);
+            const xVon = Math.round(this.muehleComponent.abstand * (this.muehleComponent.grafikSpielsteinPositionen[posNr][0]) - this.muehleComponent.radius);
+            const yVon = Math.round(this.muehleComponent.abstand * (this.muehleComponent.grafikSpielsteinPositionen[posNr][1]) - this.muehleComponent.radius);
 
-            const xBis = xVon + this.durchmesser;
-            const yBis = yVon + this.durchmesser;
+            const xBis = xVon + this.muehleComponent.durchmesser;
+            const yBis = yVon + this.muehleComponent.durchmesser;
 
             if (pressedX >= xVon && pressedX <= xBis && pressedY >= yVon
                     && pressedY <= yBis)
@@ -156,11 +154,11 @@ export class muehleMouseListener
             for (let posNr = 1; posNr < 25; posNr++)
             {
 
-                const xVon = Math.round(this.abstand * (this.muehleComponent.grafikSpielsteinPositionen[posNr][0] ) - this.radius);
-                const yVon = Math.round(this.abstand * (this.muehleComponent.grafikSpielsteinPositionen[posNr][1] ) - this.radius);
+                const xVon = Math.round(this.muehleComponent.abstand * (this.muehleComponent.grafikSpielsteinPositionen[posNr][0] ) - this.muehleComponent.radius);
+                const yVon = Math.round(this.muehleComponent.abstand * (this.muehleComponent.grafikSpielsteinPositionen[posNr][1] ) - this.muehleComponent.radius);
 
-                const xBis = xVon + this.durchmesser;
-                const yBis = yVon + this.durchmesser;
+                const xBis = xVon + this.muehleComponent.durchmesser;
+                const yBis = yVon + this.muehleComponent.durchmesser;
 
                 if (releasedX >= xVon && releasedX <= xBis && releasedY >= yVon
                         && releasedY <= yBis)

@@ -17,7 +17,11 @@ import { FormGroup, FormControl, Validators} from '@angular/forms';
 @Component({
   selector: 'app-root',
   templateUrl: './muehle.component.html',
-  styleUrls: ['./muehle.component.css']
+  styleUrls: ['./muehle.component.css'],
+  // tslint:disable-next-line: no-host-metadata-property
+  host: {
+    '(window:resize)': 'onResize($event)'
+  }
 })
 
 export class MuehleComponent implements OnInit
@@ -67,6 +71,12 @@ export class MuehleComponent implements OnInit
     alleAktuellGueltigenStellungen: Stellung[];
     alleAktuellGueltigenStellungenKopie: Stellung[];
     private neuerZugMensch: Zug = null;
+    canvasDefaultBreite = 600;
+    canvasDefaultHoehe = 700;
+    abstand: number;
+    durchmesser: number;
+    radius: number;
+
     /**
      * computerMensch[0] = COMPUTER -- Weiss wird vom Computer gespielt
      * computerMensch[0] = MENSCH -- Weiss wird vom Menschen gespielt
@@ -86,10 +96,13 @@ export class MuehleComponent implements OnInit
       [1, 7 ], [4, 7 ], [7, 7 ]];
 
 
-   ngOnInit(): void {
+    ngOnInit(): void {
 
-      const fensterBreite = this.canvas.nativeElement.offsetHeight;
-      const fensterHoehe = this.canvas.nativeElement.offsetWidth;
+      //this.ueberpruefeCanvasGroesse(this.canvas.nativeElement.offsetWidth);
+      //this.ueberpruefeCanvasGroesse();
+
+      const fensterBreite = this.canvas.nativeElement.offsetWidth;
+      const fensterHoehe = this.canvas.nativeElement.offsetHeight;
 
       if (fensterBreite < fensterHoehe)
       {
@@ -104,8 +117,66 @@ export class MuehleComponent implements OnInit
       this.zeichneSpielfeld();
 
       this.mouseListener = new muehleMouseListener(this);
-   }
+    }
 
+    onResize(event): void{
+      // this.ueberpruefeCanvasGroesse(event.target.innerWidth);
+      this.ueberpruefeCanvasGroesse();
+      this.zeichneSpielfeld();
+    }
+    ueberpruefeCanvasGroesse(): void{
+
+        const weite = this.fensterweite();
+        if (weite < this.canvasDefaultBreite){
+          this.canvas.nativeElement.width = weite;
+          this.canvas.nativeElement.height = weite * this.canvasDefaultHoehe / this.canvasDefaultBreite;
+
+          this.canvas.nativeElement.style.width = `${weite}px`;
+          this.canvas.nativeElement.style.height = `${weite * this.canvasDefaultHoehe / this.canvasDefaultBreite}px`;
+
+        }
+        else{
+          this.canvas.nativeElement.width = this.canvasDefaultBreite;
+          this.canvas.nativeElement.height = this.canvasDefaultHoehe;
+
+          this.canvas.nativeElement.style.width = `${this.canvasDefaultBreite}px`;
+          this.canvas.nativeElement.style.height = `${this.canvasDefaultHoehe}px`;
+
+        }
+        const fensterBreite = this.canvas.nativeElement.offsetWidth;
+        const fensterHoehe = this.canvas.nativeElement.offsetHeight;
+        if (fensterBreite < fensterHoehe)
+        {
+            this.spielfeldgroesse = fensterBreite;
+        }
+        else
+        {
+            this.spielfeldgroesse = fensterHoehe;
+        }
+        this.abstand = Math.round(this.spielfeldgroesse / 8 );
+        this.durchmesser = Math.round(this.abstand * (1 - this.faktor));
+        this.radius = this.durchmesser / 2;
+    }
+
+
+    fensterweite(): number {
+        if (window.innerWidth) {
+            return window.innerWidth;
+        } else if (document.body && document.body.offsetWidth) {
+            return document.body.offsetWidth;
+        } else {
+          return 0;
+        }
+      }
+/*     fensterhoehe(): number {
+        if (window.innerHeight) {
+            return window.innerHeight;
+        } else if (document.body && document.body.offsetHeight) {
+            return document.body.offsetHeight;
+        } else {
+            return 0;
+        }
+    } */
     getCBZugtiefe(): number{
       return this.formGroupZugtiefe.value.formControlZugtiefe;
     }
@@ -233,7 +304,7 @@ export class MuehleComponent implements OnInit
 
     zeichneSpielfeld(): void
     {
-      this.spielGrafik.zeichneSpielBrett(this.canvas.nativeElement.offsetWidth, this.canvas.nativeElement.offsetHeight);
+      this.spielGrafik.zeichneSpielBrett();
     }
 
     start(): void

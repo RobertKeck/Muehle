@@ -13,9 +13,15 @@ export class spielbrettGrafik
         this.muehleComponent = muehleComponent;
     }
 
-    zeichneSpielBrett(fensterBreite: number, fensterHoehe: number): void
+    zeichneSpielBrett(): void
     {
+        this.muehleComponent.ueberpruefeCanvasGroesse();
         const hintergrundfarbe = '#fadfbe';
+
+        const fensterBreite = this.muehleComponent.canvas.nativeElement.offsetWidth;
+        const fensterHoehe = this.muehleComponent.canvas.nativeElement.offsetHeight;
+
+
         if (fensterBreite < fensterHoehe)
         {
             this.muehleComponent.spielfeldgroesse = fensterBreite;
@@ -27,6 +33,8 @@ export class spielbrettGrafik
         this.abstand = Math.round(this.muehleComponent.spielfeldgroesse / 8 );
 
         this.ctx = this.muehleComponent.canvas.nativeElement.getContext('2d');
+
+
         this.ctx.lineWidth = 1;
         // Spielbrett zeichnen
         this.ctx.fillStyle = 'white';

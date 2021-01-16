@@ -1,4 +1,4 @@
-
+<meta name="viewport" content="width=device-width, initial-scale=1">
  <div class="container">
     <div class="row">
         <div class="col-4">
@@ -30,7 +30,9 @@
                 <div class="form-group">
                     <label for="formControlWeiss">White: </label>
                     <select formControlName="formControlWeiss" class="form-control" >
-                        <option *ngFor="let z of weissMoeglicheSpieler">{{z}}</option>
+                        <!-- <option *ngFor="let z of weissMoeglicheSpieler">{{z}}</option> -->
+                        <option value="Human" selected>Human</option>
+                        <option value="Computer" >Computer</option>
                     </select>
                 </div>
             </form>
@@ -40,7 +42,9 @@
                 <div class="form-group">
                     <label for="formControlSchwarz">Black: </label>
                     <select formControlName="formControlSchwarz" class="form-control" >
-                        <option *ngFor="let z of schwarzMoeglicheSpieler">{{z}}</option>
+                        <!-- <option *ngFor="let z of schwarzMoeglicheSpieler">{{z}}</option> -->
+                        <option value="Human">Human</option>
+                        <option value="Computer" selected>Computer</option>
                     </select>
                 </div>
             </form>
@@ -52,11 +56,21 @@
             <button (click)='zugZurueck()' type='button' class='mitPlatz'>Back</button>
             <button (click)='loescheSpielfeld()' type='button'>Delete</button>
     </div>
+    <div class="row abstand-oben">
+      <textarea [(ngModel)]='logTextField' rows='2' class="col-12"> </textarea>
 
-    <canvas #canvas  class="MuehleCanvas"  width="600" height="700"></canvas>
 
-    <div class="row">
-            <textarea [(ngModel)]='logTextField' rows='2' class="col-12"> </textarea>
     </div>
+    <!-- <canvas #canvas  class="MuehleCanvas"  width="600" height="700"></canvas> -->
+    <!-- <canvas #canvas  class="MuehleCanvas"  ></canvas> -->
+
+    <!-- 700 / 600 * 100 = 166,666667 -->
+<!--     <div class="responsive-canvas" style="padding-bottom: 117%;">
+      <canvas #canvas id="canvasbanner" width=3000 height=2000 style="outline: none"></canvas>
+
+    </div> -->
+    <canvas #canvas  class="MuehleCanvas" ></canvas>
+
+
 
 </div>
