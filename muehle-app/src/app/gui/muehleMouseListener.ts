@@ -50,11 +50,11 @@ export class muehleMouseListener
     }
     pressed(pressedX: number, pressedY: number): void
     {
-        console.log('pressedX: ' + pressedX);
-        console.log('pressedY: ' + pressedY);
+        /*  console.log('pressedX: ' + pressedX);
+            console.log('pressedY: ' + pressedY); */
         // Wenn das Spiel nicht am laufen ist, darf kein Spielstein verschoben werden. Dasselbe
         // gilt, wenn der Mensch nicht am Zug ist.
-        if (!this.muehleComponent.istSpielGestartet() || !this.muehleComponent.istMenschAmZug())
+        if (!this.muehleComponent.getSpielIstGestartet() || !this.muehleComponent.istMenschAmZug())
         {
             return;
         }
@@ -73,8 +73,10 @@ export class muehleMouseListener
         let posAktuell = -1;
         for (let posNr = 0; posNr < 25; posNr++)
         {
-            const xVon = Math.round(this.muehleComponent.abstand * (this.muehleComponent.grafikSpielsteinPositionen[posNr][0]) - this.muehleComponent.radius);
-            const yVon = Math.round(this.muehleComponent.abstand * (this.muehleComponent.grafikSpielsteinPositionen[posNr][1]) - this.muehleComponent.radius);
+            const xVon = Math.round(this.muehleComponent.abstand * (this.muehleComponent.grafikSpielsteinPositionen[posNr][0]) -
+                                      this.muehleComponent.radius);
+            const yVon = Math.round(this.muehleComponent.abstand * (this.muehleComponent.grafikSpielsteinPositionen[posNr][1]) -
+                                      this.muehleComponent.radius);
 
             const xBis = xVon + this.muehleComponent.durchmesser;
             const yBis = yVon + this.muehleComponent.durchmesser;
@@ -140,7 +142,7 @@ export class muehleMouseListener
     {
         // Wenn das Spiel nicht am laufen ist, darf kein Spielstein verschoben werden. Dasselbe
         // gilt, wenn der Mensch nicht am Zug ist.
-        if (!this.muehleComponent.istSpielGestartet() || !this.muehleComponent.istMenschAmZug())
+        if (!this.muehleComponent.getSpielIstGestartet() || !this.muehleComponent.istMenschAmZug())
         {
             return;
         }
@@ -154,8 +156,10 @@ export class muehleMouseListener
             for (let posNr = 1; posNr < 25; posNr++)
             {
 
-                const xVon = Math.round(this.muehleComponent.abstand * (this.muehleComponent.grafikSpielsteinPositionen[posNr][0] ) - this.muehleComponent.radius);
-                const yVon = Math.round(this.muehleComponent.abstand * (this.muehleComponent.grafikSpielsteinPositionen[posNr][1] ) - this.muehleComponent.radius);
+                const xVon = Math.round(this.muehleComponent.abstand * (this.muehleComponent.grafikSpielsteinPositionen[posNr][0] ) -
+                                         this.muehleComponent.radius);
+                const yVon = Math.round(this.muehleComponent.abstand * (this.muehleComponent.grafikSpielsteinPositionen[posNr][1] ) -
+                                         this.muehleComponent.radius);
 
                 const xBis = xVon + this.muehleComponent.durchmesser;
                 const yBis = yVon + this.muehleComponent.durchmesser;

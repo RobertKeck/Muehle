@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import {SpielThread } from './SpielThread';
 import {ZugGenerator} from './ZugGenerator';
 import {Stellung} from './Stellung';
@@ -21,7 +21,9 @@ import { FormGroup, FormControl, Validators} from '@angular/forms';
   // tslint:disable-next-line: no-host-metadata-property
   host: {
     '(window:resize)': 'onResize($event)'
-  }
+  }/* ,
+  encapsulation: ViewEncapsulation.ShadowDom */
+  /* , encapsulation: ViewEncapsulation.None */
 })
 
 export class MuehleComponent implements OnInit
@@ -40,6 +42,8 @@ export class MuehleComponent implements OnInit
     mousePosVon = -1;
     mousePosBis = -1;
     faktor  = 0.333333333;
+    stopContinueButtonText = 'Stop';
+    private spielIstGestartet = false;
 
     formGroupZugtiefe = new FormGroup({
       formControlZugtiefe: new FormControl(5, Validators.required)
@@ -53,6 +57,9 @@ export class MuehleComponent implements OnInit
     });
 
     title = 'muehle-app';
+    @ViewChild('logarea')
+    logTextFieldHTML: ElementRef;
+
     logTextField = '';
     spielsteinInBewegung = false;
     spielsteinBewegungX = 0;
@@ -101,8 +108,8 @@ export class MuehleComponent implements OnInit
       //this.ueberpruefeCanvasGroesse(this.canvas.nativeElement.offsetWidth);
       //this.ueberpruefeCanvasGroesse();
 
-      const fensterBreite = this.canvas.nativeElement.offsetWidth;
-      const fensterHoehe = this.canvas.nativeElement.offsetHeight;
+      const fensterBreite = this.canvas.nativeElement.width;
+      const fensterHoehe = this.canvas.nativeElement.height;
 
       if (fensterBreite < fensterHoehe)
       {
@@ -134,6 +141,9 @@ export class MuehleComponent implements OnInit
           this.canvas.nativeElement.style.width = `${weite}px`;
           this.canvas.nativeElement.style.height = `${weite * this.canvasDefaultHoehe / this.canvasDefaultBreite}px`;
 
+          if (this.logTextFieldHTML){
+            this.logTextFieldHTML.nativeElement.style.width = `${weite}px`;
+          }
         }
         else{
           this.canvas.nativeElement.width = this.canvasDefaultBreite;
@@ -142,9 +152,12 @@ export class MuehleComponent implements OnInit
           this.canvas.nativeElement.style.width = `${this.canvasDefaultBreite}px`;
           this.canvas.nativeElement.style.height = `${this.canvasDefaultHoehe}px`;
 
+          if (this.logTextFieldHTML){
+            this.logTextFieldHTML.nativeElement.style.width = `${this.canvasDefaultBreite}px`;
+          }
         }
-        const fensterBreite = this.canvas.nativeElement.offsetWidth;
-        const fensterHoehe = this.canvas.nativeElement.offsetHeight;
+        const fensterBreite = this.canvas.nativeElement.width;
+        const fensterHoehe = this.canvas.nativeElement.height;
         if (fensterBreite < fensterHoehe)
         {
             this.spielfeldgroesse = fensterBreite;
@@ -160,8 +173,10 @@ export class MuehleComponent implements OnInit
 
 
     fensterweite(): number {
-        if (window.innerWidth) {
-            return window.innerWidth;
+        if (window.outerWidth ) {
+            //return window.innerWidth;
+            // return window.innerWidth * window.devicePixelRatio;
+            return window.outerWidth;
         } else if (document.body && document.body.offsetWidth) {
             return document.body.offsetWidth;
         } else {
@@ -190,28 +205,38 @@ export class MuehleComponent implements OnInit
     /**
      * Spiele-Thread wird gestoppt
      */
-    stoppeSpiel(): void
+    stopContinueSpiel(): void
     {
-      if (this.spielThread != null && this.spielThread.isAlive())
-      {
-            this.spielThread.stop();
-
-            this.aktuelleStellung = this.aktuelleStellungKopie.kopiereStellung();
-
-            this.stellungsFolgeZobristKeys = this.stellungsFolgeZobristKeysKopie.slice();
-            this.stellungsFolge = this.stellungsFolgeKopie.slice();
-
-            // ermittle die aktuell gueltigen Zuege
-            const zugGen = new ZugGenerator();
-            this.alleAktuellGueltigenStellungen = zugGen.ermittleAlleZuege(this.aktuelleStellung,
-                    this.stellungsFolge.length, false);
-
-            this.log('Das Spiel wurde unterbrochen  -  mit \'Start\' kann es fortgesetzt werden.');
+        if (this.spielThread != null){
+            if (this.getSpielIstGestartet())
+            {
+                this.stoppeSpiel();
+            }
+            else{
+              this.spielThread.start();
+            }
         }
+    }
+    stoppeSpiel(){
+      this.spielThread.stop();
+      this.setSpielIstGestartet(false);
+
+      this.aktuelleStellung = this.aktuelleStellungKopie.kopiereStellung();
+
+      this.stellungsFolgeZobristKeys = this.stellungsFolgeZobristKeysKopie.slice();
+      this.stellungsFolge = this.stellungsFolgeKopie.slice();
+
+      // ermittle die aktuell gueltigen Zuege
+      const zugGen = new ZugGenerator();
+      this.alleAktuellGueltigenStellungen = zugGen.ermittleAlleZuege(this.aktuelleStellung,
+              this.stellungsFolge.length, false);
+
+      this.log('Das Spiel wurde unterbrochen  -  mit \'Continue\' kann es fortgesetzt werden.');
     }
     zugZurueck(): void
     {
         this.spielThread.stop();
+        this.setSpielIstGestartet(false);
 
         if (this.stellungsFolge.length > 1)
         {
@@ -232,27 +257,27 @@ export class MuehleComponent implements OnInit
             this.alleAktuellGueltigenStellungenKopie = this.alleAktuellGueltigenStellungen.slice();
 
 
-            this.log('Der letzte Zug wurde rueckgaengig gemacht. Das Spiel wurde unterbrochen und kann mit \'Start\' fortgesetzt werden.');
+            this.log('Der letzte Zug wurde rueckgaengig gemacht. Das Spiel wurde unterbrochen und kann mit \'Continue\' fortgesetzt werden.');
             // Stellung zeichnen
             this.zeichneSpielfeld();
 
         }
     }
 
-    loescheSpielfeld(): void
+     loescheSpielfeld(): void
     {
-        let ausgabe = '';
-        if (this.spielThread != null && this.spielThread.isAlive())
+        // let ausgabe = '';
+        if (this.spielThread != null && this.getSpielIstGestartet())
         {
           this.spielThread.stop();
           this.computerEngineWeiss = null;
           this.computerEngineSchwarz = null;
 
-          ausgabe += 'Das Spiel wurde beendet und ';
+          // ausgabe += 'Das Spiel wurde beendet und ';
         }
         this.erstelleStartStellung();
-        ausgabe += 'das Spielfeld wurde geloescht.';
-        this.log(ausgabe);
+        // ausgabe += 'das Spielfeld wurde geloescht.';
+        // this.log(ausgabe);
         this.zeichneSpielfeld();
     }
 
@@ -312,10 +337,8 @@ export class MuehleComponent implements OnInit
 
 
         this.logTextField += 'Spiel wurde gestartet..';
-        if (this.spielThread != null)
-        {
-            this.spielThread.stop();
-        }
+
+        this.loescheSpielfeld();
 
 /*
         if (typeof Worker !== 'undefined') {
@@ -363,21 +386,9 @@ export class MuehleComponent implements OnInit
     }
 
 
-
-    istSpielGestartet(): boolean
-    {
-        if (this.spielThread == null)
-        {
-            return false;
-        }
-        return this.spielThread.isAlive();
-    }
-
-
-
     istMenschAmZug(): boolean
     {
-        if (this.istSpielGestartet())
+        if (this.spielIstGestartet)
         {
             let eigen = 0;
             if (this.aktuelleStellung.getAmZug() === -1)
@@ -450,6 +461,20 @@ export class MuehleComponent implements OnInit
       this.neuerZugMensch.setPosBis(this.posBis);
       this.neuerZugMensch.setPosSteinWeg(this.posSteinWeg);
       this.setNeuerZugMensch(this.neuerZugMensch);
+    }
+
+    setSpielIstGestartet(spielStatus: boolean): void{
+      this.spielIstGestartet = spielStatus;
+      if (spielStatus){
+        this.stopContinueButtonText = 'Stop';
+      }
+      else{
+        this.stopContinueButtonText = 'Continue';
+      }
+
+    }
+    getSpielIstGestartet(): boolean{
+      return this.spielIstGestartet;
     }
 
 

@@ -11,10 +11,10 @@
 }
 
 button {
-  width: 70px;
+  width: 100px;
 }
 button.mitPlatz{
-  margin-right: 7px;
+  margin-right: 20px;
   margin-left: 0px;
   padding-left: 0;
   padding-right: 0;
@@ -22,6 +22,7 @@ button.mitPlatz{
 .mittig {
   text-align: center;
 }
+
 .abstand-oben{
   margin-top: 15px;
 }

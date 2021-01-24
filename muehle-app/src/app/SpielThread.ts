@@ -8,12 +8,12 @@ export class SpielThread
 {
 
     muehleComponent: MuehleComponent;
-    muehleComponentZuEnde = false;
     zugtiefeMax: number;
     zugGen: ZugGenerator = new ZugGenerator();
     zugNr = 0;
     refreshId: number;
     refreshIdWarteAufZugMensch: number;
+
 
     constructor(muehleComponent: MuehleComponent)
     {
@@ -28,7 +28,7 @@ export class SpielThread
      */
     gameLoop(spielThread: SpielThread): void{
 
-            if (spielThread.muehleComponentZuEnde === true){
+            if (spielThread.muehleComponent.getSpielIstGestartet() === false){
                 clearInterval(spielThread.refreshId);
                 return;
             }
@@ -80,16 +80,18 @@ export class SpielThread
                 let computerZug = null;
                 if (spielThread.muehleComponent.getAktuelleStellung().getAmZug() === Util.WEISS){
                     spielThread.muehleComponent.log(spielThread.muehleComponent.computerEngineWeiss.getEngineName() + ' ist mit Weiss am Zug. Bitte warten...');
-                    // Computerzug wird von computerEngineWeiss durchgefuehrt
 
+                    // Computerzug wird von computerEngineWeiss durchgefuehrt
+                    // TODO Aufruf via WebWorker, damit der Single - Thread nicht blockiert wird
                     computerZug = spielThread.muehleComponent.computerEngineWeiss.
                                         berechneNeuenZug(spielThread.muehleComponent.stellungsFolge,
                     spielThread.zugtiefeMax);
                 }
                 else{
                     spielThread.muehleComponent.log(spielThread.muehleComponent.computerEngineSchwarz.getEngineName() + ' ist mit Schwarz am Zug. Bitte warten...');
+
                     // Computerzug wird von computerEngineSchwarz durchgefuehrt
-                    //setTimeout(() => console.log('wait 01 sec'), 100);
+                    // TODO Aufruf via WebWorker, damit der Single - Thread nicht blockiert wird
                     computerZug = spielThread.muehleComponent.computerEngineSchwarz.
                                     berechneNeuenZug(spielThread.muehleComponent.stellungsFolge,
                     spielThread.zugtiefeMax);
@@ -120,11 +122,12 @@ export class SpielThread
                     spielThread.aktionenNachZug(spielThread);
                 }
             }
-            if (spielThread.muehleComponentZuEnde){
+            if (spielThread.muehleComponent.getSpielIstGestartet() === false){
                 clearInterval(spielThread.refreshId);
                 return;
             }
     }
+
     aktionenNachZug(spielThread: SpielThread): void{
 
         spielThread.muehleComponent.zeichneSpielfeld();
@@ -136,25 +139,25 @@ export class SpielThread
         spielThread.muehleComponent.stellungsFolge.push(spielThread.muehleComponent.getAktuelleStellung());
 
         if (spielThread.muehleComponent.getAktuelleStellung().getAnzahlSteine()[0] < 3){
-            spielThread.muehleComponentZuEnde = true;
+            spielThread.muehleComponent.setSpielIstGestartet(false);
             spielThread.muehleComponent.log('Schwarz hat gewonnen!');
         }
         else if (spielThread.muehleComponent.getAktuelleStellung().getAnzahlSteine()[1] < 3){
-            spielThread.muehleComponentZuEnde = true;
+            spielThread.muehleComponent.setSpielIstGestartet(false);
             spielThread.muehleComponent.log('Weiss hat gewonnen!');
         }
         else if (spielThread.muehleComponent.getAktuelleStellung().getAnzahlFreierNachbarfelder()[0] === 0
                 && spielThread.muehleComponent.getAktuelleStellung().getAnzahlSteineAussen()[0] === 0
                 && spielThread.muehleComponent.getAktuelleStellung().getAnzahlSteine()[0] > 3)
         {
-            spielThread.muehleComponentZuEnde = true; // Weiss wurde eingesperrt
+            spielThread.muehleComponent.setSpielIstGestartet(false); // Weiss wurde eingesperrt
             spielThread.muehleComponent.log('Weiss wurde eingesperrt ==> Schwarz hat gewonnen!');
         }
         else if (spielThread.muehleComponent.getAktuelleStellung().getAnzahlFreierNachbarfelder()[1] === 0
                 && spielThread.muehleComponent.getAktuelleStellung().getAnzahlSteineAussen()[1] === 0
                 && spielThread.muehleComponent.getAktuelleStellung().getAnzahlSteine()[1] > 3)
         {
-            spielThread.muehleComponentZuEnde = true; // Schwarz wurde eingesperrt
+            spielThread.muehleComponent.setSpielIstGestartet(false); // Schwarz wurde eingesperrt
             spielThread.muehleComponent.log('Schwarz wurde eingesperrt ==> Weiss hat gewonnen!');
         }
 
@@ -163,7 +166,7 @@ export class SpielThread
                 spielThread.muehleComponent.getAktuelleStellung().getZobristHashWert()) !==
                     spielThread.muehleComponent.stellungsFolgeZobristKeys.length - 1)
         {
-            spielThread.muehleComponentZuEnde = true; // Remi
+            spielThread.muehleComponent.setSpielIstGestartet(false); // Remi
             spielThread.muehleComponent.log('>>> Remie wegen Stellungswiederholung <<<');
         }
     }
@@ -182,13 +185,12 @@ export class SpielThread
                                         spielThread.muehleComponent.alleAktuellGueltigenStellungen.slice();
     }
 
-    isAlive(): boolean{
-      return (this.muehleComponentZuEnde === false);
-    }
+
     stop(): void{
-      this.muehleComponentZuEnde = true;
+        this.muehleComponent.setSpielIstGestartet(false);
     }
     start(): void{
+      this.muehleComponent.setSpielIstGestartet(true);
       this.muehleComponent.setNeuerZugMensch(null);
       // Instead of a while loop, use setInterval to give the single UI-Thread time to paint
       this.refreshId = window.setInterval( this.gameLoop, 200, this );
