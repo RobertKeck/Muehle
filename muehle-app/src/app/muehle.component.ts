@@ -231,7 +231,7 @@ export class MuehleComponent implements OnInit
       this.alleAktuellGueltigenStellungen = zugGen.ermittleAlleZuege(this.aktuelleStellung,
               this.stellungsFolge.length, false);
 
-      this.log('Das Spiel wurde unterbrochen  -  mit \'Continue\' kann es fortgesetzt werden.');
+      this.log('The game was stopped - press button to continue.');
     }
     zugZurueck(): void
     {
@@ -257,7 +257,8 @@ export class MuehleComponent implements OnInit
             this.alleAktuellGueltigenStellungenKopie = this.alleAktuellGueltigenStellungen.slice();
 
 
-            this.log('Der letzte Zug wurde rueckgaengig gemacht. Das Spiel wurde unterbrochen und kann mit \'Continue\' fortgesetzt werden.');
+            // this.log('Der letzte Zug wurde rueckgaengig gemacht. Das Spiel wurde unterbrochen und kann mit \'Continue\' fortgesetzt werden.');
+            this.log('Last move was undo. To continue game please press button.');
             // Stellung zeichnen
             this.zeichneSpielfeld();
 

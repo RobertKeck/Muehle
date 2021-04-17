@@ -59,10 +59,10 @@ export class SpielThread
              *-----------------------------------------------------------------------------------------------------*/
             if (spielThread.muehleComponent.computerMensch[eigen] === Util.MENSCH){
                 if (spielThread.muehleComponent.getAktuelleStellung().getAmZug() === Util.WEISS){
-                    spielThread.muehleComponent.log('Weiss ist am Zug');
+                    spielThread.muehleComponent.log('It\'s white\'s turn');
                 }
                 else{
-                    spielThread.muehleComponent.log('Schwarz ist am Zug');
+                    spielThread.muehleComponent.log('It\'s black\'s turn');
                 }
                 if (spielThread.muehleComponent.getNeuerZugMensch() != null){
                     spielThread.kopiereStellung(spielThread);
@@ -79,7 +79,8 @@ export class SpielThread
                 spielThread.kopiereStellung(spielThread);
                 let computerZug = null;
                 if (spielThread.muehleComponent.getAktuelleStellung().getAmZug() === Util.WEISS){
-                    spielThread.muehleComponent.log(spielThread.muehleComponent.computerEngineWeiss.getEngineName() + ' ist mit Weiss am Zug. Bitte warten...');
+                    //spielThread.muehleComponent.log(spielThread.muehleComponent.computerEngineWeiss.getEngineName() + ' ist mit Weiss am Zug. Bitte warten...');
+                    spielThread.muehleComponent.log(spielThread.muehleComponent.computerEngineWeiss.getEngineName() + ' is thinking. Please wait...');
 
                     // Computerzug wird von computerEngineWeiss durchgefuehrt
                     // TODO Aufruf via WebWorker, damit der Single - Thread nicht blockiert wird
@@ -88,7 +89,7 @@ export class SpielThread
                     spielThread.zugtiefeMax);
                 }
                 else{
-                    spielThread.muehleComponent.log(spielThread.muehleComponent.computerEngineSchwarz.getEngineName() + ' ist mit Schwarz am Zug. Bitte warten...');
+                    spielThread.muehleComponent.log(spielThread.muehleComponent.computerEngineSchwarz.getEngineName() + ' is thinking. Please wait...');
 
                     // Computerzug wird von computerEngineSchwarz durchgefuehrt
                     // TODO Aufruf via WebWorker, damit der Single - Thread nicht blockiert wird
@@ -140,25 +141,25 @@ export class SpielThread
 
         if (spielThread.muehleComponent.getAktuelleStellung().getAnzahlSteine()[0] < 3){
             spielThread.muehleComponent.setSpielIstGestartet(false);
-            spielThread.muehleComponent.log('Schwarz hat gewonnen!');
+            spielThread.muehleComponent.log('Black won!');
         }
         else if (spielThread.muehleComponent.getAktuelleStellung().getAnzahlSteine()[1] < 3){
             spielThread.muehleComponent.setSpielIstGestartet(false);
-            spielThread.muehleComponent.log('Weiss hat gewonnen!');
+            spielThread.muehleComponent.log('White won!');
         }
         else if (spielThread.muehleComponent.getAktuelleStellung().getAnzahlFreierNachbarfelder()[0] === 0
                 && spielThread.muehleComponent.getAktuelleStellung().getAnzahlSteineAussen()[0] === 0
                 && spielThread.muehleComponent.getAktuelleStellung().getAnzahlSteine()[0] > 3)
         {
             spielThread.muehleComponent.setSpielIstGestartet(false); // Weiss wurde eingesperrt
-            spielThread.muehleComponent.log('Weiss wurde eingesperrt ==> Schwarz hat gewonnen!');
+            spielThread.muehleComponent.log('White has been locked up ==> Black won!');
         }
         else if (spielThread.muehleComponent.getAktuelleStellung().getAnzahlFreierNachbarfelder()[1] === 0
                 && spielThread.muehleComponent.getAktuelleStellung().getAnzahlSteineAussen()[1] === 0
                 && spielThread.muehleComponent.getAktuelleStellung().getAnzahlSteine()[1] > 3)
         {
             spielThread.muehleComponent.setSpielIstGestartet(false); // Schwarz wurde eingesperrt
-            spielThread.muehleComponent.log('Schwarz wurde eingesperrt ==> Weiss hat gewonnen!');
+            spielThread.muehleComponent.log('Black has been locked up ==> White won!');
         }
 
         else if (spielThread.muehleComponent.stellungsFolgeZobristKeys.indexOf(
@@ -167,7 +168,7 @@ export class SpielThread
                     spielThread.muehleComponent.stellungsFolgeZobristKeys.length - 1)
         {
             spielThread.muehleComponent.setSpielIstGestartet(false); // Remi
-            spielThread.muehleComponent.log('>>> Remie wegen Stellungswiederholung <<<');
+            spielThread.muehleComponent.log('>>> Remie because of repetition <<<');
         }
     }
     /**
