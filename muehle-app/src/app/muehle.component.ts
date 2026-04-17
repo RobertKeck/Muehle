@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild, ViewEncapsulation, ChangeDetectorRef } from '@angular/core';
 import {SpielThread } from './SpielThread';
 import {ZugGenerator} from './ZugGenerator';
 import {Stellung} from './Stellung';
@@ -32,6 +32,7 @@ export class MuehleComponent implements OnInit
 {
     @ViewChild('canvas', { static: true })
     canvas: ElementRef<HTMLCanvasElement>;
+    constructor(private cdr: ChangeDetectorRef) {}
     worker: Worker; // Todo : worker nutzen um ermittleBestenZug in einem Thread auszufuehren
     spielGrafik: spielbrettGrafik = new spielbrettGrafik(this);
     zugtiefeList: any = [1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -291,6 +292,7 @@ export class MuehleComponent implements OnInit
     log(meldung: string): void
     {
         this.logTextField = meldung;
+        this.cdr.detectChanges();
     }
 
 
