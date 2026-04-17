@@ -5,13 +5,12 @@ import { MuehleComponent } from './muehle.component';
 import { FormsModule, ReactiveFormsModule  } from '@angular/forms';
 
 @NgModule({
-  declarations: [
-    MuehleComponent
-  ],
+  declarations: [],
   imports: [
     BrowserModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MuehleComponent
   ],
   providers: [],
   bootstrap: [MuehleComponent]

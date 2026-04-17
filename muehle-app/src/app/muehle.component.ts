@@ -11,13 +11,15 @@ import {IEngine} from './IEngine';
 import {IStellung} from './IStellung';
 import {spielbrettGrafik} from './gui/spielbrettGrafik';
 import {muehleMouseListener} from './gui/muehleMouseListener';
-import { FormGroup, FormControl, Validators} from '@angular/forms';
+import { FormGroup, FormControl, Validators, FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 
 @Component({
   selector: 'app-root',
   templateUrl: './muehle.component.html',
   styleUrls: ['./muehle.component.css'],
+  standalone: true,
+  imports: [FormsModule, ReactiveFormsModule],
   // tslint:disable-next-line: no-host-metadata-property
   host: {
     '(window:resize)': 'onResize($event)'

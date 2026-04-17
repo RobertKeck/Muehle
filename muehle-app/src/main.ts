@@ -1,15 +1,11 @@
 import { enableProdMode } from '@angular/core';
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-
-import { MuehleModule } from './app/muehle.module';
+import { bootstrapApplication } from '@angular/platform-browser';
+import { MuehleComponent } from './app/muehle.component';
 import { environment } from './environments/environment';
-
-
-
 
 if (environment.production) {
   enableProdMode();
 }
 
-platformBrowserDynamic().bootstrapModule(MuehleModule)
+bootstrapApplication(MuehleComponent)
   .catch(err => console.error(err));
