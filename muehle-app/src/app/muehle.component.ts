@@ -299,17 +299,16 @@ export class MuehleComponent implements OnInit
     {
         this.aktuelleStellung = new Stellung();
         this.aktuelleStellung.setAmZug(Util.WEISS);
-        const initialAnzahlSteine = [9, 9];
 
-        this.aktuelleStellung.setAnzahlSteine(initialAnzahlSteine);
-        this.aktuelleStellung.setAnzahlSteineAussen(initialAnzahlSteine);
+        this.aktuelleStellung.setAnzahlSteine([9, 9]);
+        this.aktuelleStellung.setAnzahlSteineAussen([9, 9]);
         this.aktuelleStellung.anzahlMuehlen[0] = 0;
         this.aktuelleStellung.anzahlMuehlen[1] = 0;
         // this.aktuelleStellung.anzahlOffenerMuehlen[0] = 0;
         // this.aktuelleStellung.anzahlOffenerMuehlen[1] = 0;
         this.aktuelleStellung.anzahlFreierNachbarfelder[0] = 0;
         this.aktuelleStellung.anzahlFreierNachbarfelder[1] = 0;
-        for (let i = 0; i < 17; i++)
+        for (let i = 0; i < 65; i++)
         {
             this.aktuelleStellung.muehle[0][i] = 0;
             this.aktuelleStellung.muehle[1][i] = 0;
@@ -440,7 +439,7 @@ export class MuehleComponent implements OnInit
      * Ermittelt zum uebergeben Zug die Stellung, die entsteht, wenn der Zug ausgefuehrt wird.
      * Wenn null zurueckgegeben wird, ist der Zug nicht gueltig
      */
-     ermittleStellungZumGueltigenZug(gueltigerZug: Zug): Stellung
+     ermittleStellungZumGueltigenZug(gueltigerZug: IZug): Stellung
     {
        if (gueltigerZug == null){
          return null;

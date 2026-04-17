@@ -66,9 +66,12 @@ export class SpielThread
                 }
                 if (spielThread.muehleComponent.getNeuerZugMensch() != null){
                     spielThread.kopiereStellung(spielThread);
-                    spielThread.muehleComponent.setAktuelleStellung(spielThread.muehleComponent.ermittleStellungZumGueltigenZug(
-                    spielThread.muehleComponent.getNeuerZugMensch() as Zug).kopiereStellung());
-                    spielThread.aktionenNachZug(spielThread);
+                    const neueStellungZug = spielThread.muehleComponent.ermittleStellungZumGueltigenZug(
+                        spielThread.muehleComponent.getNeuerZugMensch() as Zug);
+                    if (neueStellungZug != null) {
+                        spielThread.muehleComponent.setAktuelleStellung(neueStellungZug.kopiereStellung());
+                        spielThread.aktionenNachZug(spielThread);
+                    }
                     spielThread.muehleComponent.setNeuerZugMensch(null);
                 }
             }
